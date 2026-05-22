@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Артем Никольский</title>
+    <link rel="icon" href="https://lh3.googleusercontent.com/rd-d/ALs6j_Hc0iaVl8AKj17AwM4LDZHgF2D4OpCqNZy7kzjiB4VdhUzhY2GMz7SI4nK0MpUKlMckMIT7jZ7rF_9iwno_DFljudBDF5mspoZUgzf5rS47Dvvf95F3QSdAopOPGhLqrGD1ywPIUIwXaAM7WhpOZR08pvPtWYpb12MomDZur84lij1iZAXgNwNAVYUypdF3ky0VtYTTY-GDMEmIWArFzuOQpCN_xTVWvrsAOieeP2X6tbUokUxHjn9i9-wWn4rbZsMPmkcgVmj93q-ge9bntlPKSOUd3VJNkAxVJq6zhMgZKg8xQwC7ur94HkTtD98O6hKZ94chLD97qs9XOZ9LR-FW_QzZj_SypGD7jwDQp0yv8aDRQyhkD7bjxfGJv50SgjRkIwIJsYj8_MPRfFqeDRZ3XUri-EJj-Z6KWNv77z_1RPimYJGeuxSAUYzsJaITzE2lhOtU95Q0T1ZsgKTc1idGttcV_fLkUKpGbXrylnrf4QfbTRxkTGMjsTpthulyXIMO8J29PUmEN82TypP9svsPA8vie1F_2s0_xBydKpXRMcxnOlCPj50oLZO2DnKm6l529xluRFd0eYRfXMafDDITtlVN2jX0hKfoufJz_PdkhBjsj5HnY0pgKEqnPiEcbMIi_aaPufx5TxdMEvVCicHskfFzJ8OgJsrowlxMOOYfCJtxHgoNECLBNIXhFr8YdvuqoDL3JxCWa0vDhLjf_TN-Jti7uYk2Uby46j9NiYdra3rzShO3aRnwnPEjv4JDNbKmMELWFUsGPZxbY89e3SBmaEyByECttTMbX0vMOTtjgtaNsueLKSyUGO0H0PIRLVPVhCOXEchE4ewPW-QKudi0Ui4ry_E0tlLM3_0wiSibeBDIPnyQF_YMYRyKgABovxrUeaKeqX_8eNfm0Ux-12twQmKiQK_Vu25i2yMIV8bRcWFcUxcPJFQ7Hw2yApnD5H3yhfTAc4nciMJMbF_zD4xLNg_uw0KiKdbPzwnHyLweEHUP51OmbkUtyAvA-a_t3dqzJxqlD0rqq3mALaApe-lKsYYt2Dx-GwOpJSm3ogkubDIW_IjHQ2l4qqnNmohft-LD-EZZHdmbvzctrKgRnRKHT_PUS4R1O7oZPCiAi0RV2DHseO_f-8x5bc9Rf_j1BCc=w1920-h965?auditContext=prefetch" type="image/x-icon">
+    <!-- Иконки и шрифты -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Слегка более светлый и насыщенный неоновый фон */
+            --bg-gradient: linear-gradient(135deg, #18113c 0%, #2b1c5c 50%, #0f0a28 100%);
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --panel-border: rgba(180, 100, 255, 0.25);
+            --accent-primary: #b366ff;
+            --accent-secondary: #8c30e8;
+            --text-main: #ffffff;
+            --text-muted: #bdaec6;
+            --blur-strength: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            /* Полное скрытие системного курсора для создания кастомного */
+            cursor: none !important;
+            user-select: none; /* Предотвращает случайное выделение текста */
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden; /* Полное отсутствие внешней прокрутки страницы */
+        }
+
+        /* Полное скрытие скроллбаров во всех браузерах при сохранении возможности прокрутки */
+        *::-webkit-scrollbar {
+            width: 0px !important;
+            height: 0px !important;
+            display: none !important;
+        }
+        * {
+            scrollbar-width: none !important; /* Firefox */
+            -ms-overflow-style: none !important; /* IE и Edge */
+        }
+
+        /* Размытые неоновые сферы на фоне */
+        .bg-blur-sphere {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: pulse 12s infinite alternate ease-in-out;
+        }
+
+        .sphere-1 { width: 500px; height: 500px; background: var(--accent-primary); top: -5%; left: 10%; }
+        .sphere-2 { width: 600px; height: 600px; background: #621bc2; bottom: -10%; right: 10%; animation-delay: -6s; }
+
+        /* Мягкое свечение, следующее за курсором мыши на бэкграунде */
+        .interactive-glow {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(179, 102, 255, 0.12) 0%, rgba(98, 27, 194, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.15) translate(30px, 40px); }
+        }
+
+        /* Кастомный курсор: центральная точка */
+        .custom-cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--accent-primary), 0 0 20px #ffffff;
+            transition: width 0.2s, height 0.2s, background-color 0.2s, transform 0.2s;
+        }
+
+        /* Кастомный курсор: плавно отстающий внешний круг */
+        .custom-cursor-ring {
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(179, 102, 255, 0.6);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.1, 0.8, 0.3, 1), 
+                        height 0.3s cubic-bezier(0.1, 0.8, 0.3, 1), 
+                        border-color 0.3s, background-color 0.3s;
+        }
+
+        /* Эффект наведения курсора на кликабельные объекты */
+        .custom-cursor-dot.hovered {
+            width: 4px;
+            height: 4px;
+            background-color: var(--accent-primary);
+        }
+
+        .custom-cursor-ring.hovered {
+            width: 48px;
+            height: 48px;
+            border-color: #ffffff;
+            background-color: rgba(179, 102, 255, 0.15);
+        }
+
+        /* Эффект перетаскивания (сжатие кольца при drag) */
+        .custom-cursor-dot.grabbing {
+            transform: translate(-50%, -50%) scale(0.7);
+            background-color: var(--accent-primary);
+        }
+
+        .custom-cursor-ring.grabbing {
+            width: 20px;
+            height: 20px;
+            border-color: #ffffff;
+            background-color: rgba(179, 102, 255, 0.3);
+        }
+
+        /* Главный контейнер кабинета */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 92%;
+            max-width: 1240px;
+            height: 85vh;
+            max-height: 850px;
+            min-height: 650px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid var(--panel-border);
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeInContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: scale(0.97) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Навигационная панель (Вкладки) */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 25px 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 14px 34px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .tab-btn.active {
+            color: var(--text-main);
+            background: rgba(179, 102, 255, 0.15);
+            box-shadow: 0 0 20px rgba(179, 102, 255, 0.25), inset 0 0 0 1px rgba(179, 102, 255, 0.45);
+        }
+
+        /* Секции контента */
+        .content-section {
+            flex: 1;
+            padding: 40px;
+            display: none;
+            height: calc(100% - 90px);
+            overflow: hidden; /* Скрываем общий скролл для секций, где нужен внутренний */
+        }
+
+        .content-section.active {
+            display: block;
+            animation: tabFade 0.4s ease-out forwards;
+        }
+
+        @keyframes tabFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ВКЛАДКА 1: РЕКОРДЫ */
+        #records {
+            overflow-y: auto; /* Рекорды могут скроллиться полностью в своей вкладке */
+        }
+
+        .records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .record-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .record-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 30px rgba(179, 102, 255, 0.15);
+        }
+
+        .record-img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            pointer-events: none; /* Защита от перетаскивания самой картинки браузером */
+        }
+
+        .record-info {
+            padding: 25px;
+        }
+
+        .record-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(179, 102, 255, 0.2);
+            color: #ffd8a8;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 30px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .record-title {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .record-desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ВКЛАДКА 2: ТРУДОВАЯ КНИГА */
+        #employment {
+            overflow-y: auto; /* Скроллится полностью во вкладке */
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-primary) 0%, rgba(179, 102, 255, 0.1) 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -40px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #18113c;
+            border: 3px solid var(--accent-primary);
+            box-shadow: 0 0 12px var(--accent-primary);
+        }
+
+        /* Кликабельная карточка трудовой книги */
+        .timeline-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 24px 30px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column; /* Изменяем на column для укладки раскрывающегося списка */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .timeline-card:hover {
+            border-color: rgba(179, 102, 255, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Основная строка фракции и должности */
+        .timeline-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .job-fraction {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .job-fraction i {
+            color: var(--accent-primary);
+            font-size: 16px;
+        }
+
+        .job-rank {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .job-date {
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(179, 102, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(179, 102, 255, 0.3);
+            color: #e5dbff;
+            letter-spacing: 0.5px;
+        }
+
+        /* Раскрывающийся список повышений (Ускорено до 0.28s) */
+        .promo-details-panel {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.28s cubic-bezier(0.25, 1, 0.5, 1), 
+                        opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1), 
+                        margin-top 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+
+        .timeline-card.expanded .promo-details-panel {
+            max-height: 500px; /* Достаточная высота для контента */
+            opacity: 1;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 18px;
+        }
+
+        /* Список повышений внутри фракции */
+        .promotion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-left: 10px;
+        }
+
+        .promotion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 15px;
+            border-left: 2px solid var(--accent-primary);
+            position: relative;
+        }
+
+        .promotion-item::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+
+        .promo-rank {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .promo-rank i {
+            font-size: 11px;
+            color: #ffd8a8;
+        }
+
+        .promo-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ВКЛАДКА 3: РП БИОГРАФИЯ */
+        #biography {
+            overflow: hidden; /* Полностью убирает внешний скролл вкладки */
+            height: 100%;
+        }
+
+        .bio-container {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 40px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        .bio-profile-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Анкета не должна скроллиться */
+        }
+
+        .bio-avatar-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
+            flex-shrink: 0;
+        }
+
+        .bio-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-primary);
+            box-shadow: 0 0 25px rgba(179, 102, 255, 0.4);
+            pointer-events: none;
+        }
+
+        .bio-name {
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .bio-status {
+            font-size: 11px;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .bio-meta-list {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 20px;
+            overflow-y: auto; /* На случай маленьких экранов анкета имеет свой легкий скролл */
+            padding-right: 5px;
+        }
+
+        .bio-meta-item {
+            font-size: 12.5px;
+            display: flex;
+            justify-content: space-between;
+            line-height: 1.4;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding-bottom: 6px;
+        }
+
+        .bio-meta-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .bio-meta-value {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: right;
+            padding-left: 10px;
+        }
+
+        /* Биографический текст в рамке со скроллбаром внутри */
+        .bio-text-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            height: 100%;
+            overflow-y: auto; /* Внутренний скроллбар строго внутри рамки */
+            scroll-behavior: smooth;
+        }
+
+        .bio-section-block {
+            margin-bottom: 35px;
+        }
+
+        .bio-section-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .bio-text-panel h3 {
+            color: var(--text-main);
+            margin-bottom: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bio-text-panel h3::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, rgba(179, 102, 255, 0.4), transparent);
+        }
+
+        .bio-text-panel p {
+            font-size: 14.5px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            text-align: justify;
+            text-indent: 20px;
+            margin-bottom: 12px;
+        }
+
+        .bio-text-panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Адаптивный интерфейс для планшетов/мобилок */
+        @media (max-width: 992px) {
+            .main-container {
+                height: 90vh;
+                max-height: none;
+                min-height: auto;
+            }
+            .content-section {
+                height: auto;
+                overflow: visible !important;
+            }
+            #biography {
+                overflow: visible !important;
+            }
+            .bio-container {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 30px;
+            }
+            .bio-profile-card {
+                height: auto;
+            }
+            .bio-text-panel {
+                height: auto;
+                max-height: 450px; /* Фиксация высоты для мобилок, чтобы скроллилось внутри рамки */
+            }
+            /* На мобильных устройствах кастомный курсор может мешать, скрываем его */
+            .custom-cursor-dot, .custom-cursor-ring {
+                display: none !important;
+            }
+            * {
+                cursor: auto !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-tabs {
+                gap: 8px;
+                padding: 15px 10px 10px;
+            }
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 11px;
+            }
+            .timeline-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Размытые декорации на бэкграунде -->
+    <div class="bg-blur-sphere sphere-1"></div>
+    <div class="bg-blur-sphere sphere-2"></div>
+    <!-- Световой круг, плавно следующий за курсором -->
+    <div class="interactive-glow" id="interactive-bg-glow"></div>
+
+    <!-- Кастомные курсоры -->
+    <div class="custom-cursor-dot" id="custom-cursor-dot"></div>
+    <div class="custom-cursor-ring" id="custom-cursor-ring"></div>
+
+    <div class="main-container">
+        
+        <!-- Вкладки навигации -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'records')">
+                <i class="fa-solid fa-medal"></i> Рекорды
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'employment')">
+                <i class="fa-solid fa-id-card"></i> Трудовая книга
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'biography')">
+                <i class="fa-solid fa-signature"></i> РП Биография
+            </button>
+        </nav>
+
+        <!-- СОДЕРЖИМОЕ: РЕКОРДЫ -->
+        <div id="records" class="content-section active">
+            <div class="records-grid">
+
+                <!-- Карточка 0 -->
+                <a href="https://forum.gtaprovince.ru/topic/587928-province-rp-3-registraciya-rekordov/?do=findComment&comment=7224951" target="_blank" class="record-card">
+                    <img src="https://lh3.googleusercontent.com/rd-d/ALs6j_HT6ybQu1GIJoOuLbR0OF7U5cNPHL1F2794zLoN0Jn_qhlmce5fW9cEWCezblh1tlE-eTZR49NQ9I4QtUFDdsUfa693Jg8UkyhpEepc76sTGlhFWYLNTBXMyFnOLhIdMPYR2XdCMk3T71IX11skq7gqktslIvSXuJ3-KqfJtGkrk8YcGHroqTTdg2rG_GNCBbWVjZMb_EAMo-EPQ_yENpzIExGtZ9mKLM8UtN13lKFaTu_jesTzVONFJsZE-kkjMSmXI4LFf5rgRB1rU3EzV0EEnldDjKPbCzp1XV6ec9Cgel8_fLbGR-VnrPlKqKFGwM-ZJ2oRZejqwswXzXFkR4WpG7L6-7aR1nltgUdtjYut0gKBNBrcan8w3R7eA0GV7T_-dy0f_MT6TyUGjO7LMfEpjfiYAOrsngNySIxktsijywhUPuyiL3ETkKgnWGziHqi2w59fxFwjcDEtYkExyG_7qqCMuGfW6LKEqQiEoMSyRYX8BrF5Oa4TrZZQ4oY7CAvtkqgDP02JB1q-0rCOQ8y5Ga7A92Aorz7Aa7HiG-YY_0puqa7p_F3pdpPswV80A7d8zft9v_xTdOjeWfsZrz_IQ74bweWTRzpIC5WWLT3kqX-z-7ntpCUsZzJUXTyOBu6ELiZw3Q6lWUIh_coSC5rv27jyOdGb9_enNCMBokGDnhZW5GJmEfEmzz99rlvZUq_LJJjYKkWdDpWQhMHf8wv27l1MJtiiKUIbk7qlxv4O4EkBFI4eA-QQDMMFOrY_xlwdpuX4PnL2hCR-XBXUjrzo0FNJMeeEW5mAGj-Q0wpSVqbE3fokloJDupW9MCrPBVOz_tQgb1lgV_aeeSurM82hhWRyg50ToQ3s0wHJF-ISs18alZ3j6UsCKziWelzNiBaEj2hXkTaQxIWI2gdtrcMOgyw6PV7yTUfy4oZjPziziuqoyJwR-KtTemAScV7p9DIky5XlMJzJNgtsF45mWcRjS6V-lS9wvUpOkbUSTKhqoe03tp3jIDwT4cvM6GvHmXVy66PKGMQfPeYwZ18ThS6J3uwNWiaQgX71EgHyj6xl4CsOFsPK7BaeGzY4rGyJ6F1vB7tXye4qB30023IkppzfelxEC9LppNO3anMXhetCBW65GeWwbZbR7vo8MsSQcic=w1920-h965?auditContext=prefetch" alt="Record" class="record-img">
+                    <div class="record-info">
+                        <span class="record-tag"><i class="fa-solid fa-heart-pulse"></i> Медицина</span>
+                        <h3 class="record-title">ЛЦТР (Лекций и Тренировок)</h3>
+                        <p class="record-desc">Наибольшее количество проведённых ЛЦТР (Лекций и Тренировок) за 7 дней (1 неделю): 258 шт</p>
+                    </div>
+                </a>
+
+                <!-- Карточка 1 -->
+                <a href="https://forum.gtaprovince.ru/topic/587928-province-rp-3-registraciya-rekordov/?do=findComment&comment=7310491" target="_blank" class="record-card">
+                    <img src="https://lh3.googleusercontent.com/rd-d/ALs6j_HSlQSYApeYnY_nFugKSuHyopf6wpm7_WpW_fPuayXCEQ4SjP9Q6OC9NsNT4rPWQK_39K4evB0kTT9H7YpaNVi4X5Mkcv0S_d88VSwJs-yLXm64kYgjt3mL7e4lrJIYhTGUaA3BSS6kjHYU71Ua84waFwq8e8t9qKp-5q97_nF5nrdGeCWvyjwM-nmUQIpvjIT1Zq03dfJjKh--JAUmNqI_4anZs0zZ-_txFCkmjCXL6A2TexNdJvN2ieNjYWYFnIjAwnEWlRITbKpGPi73UdCWIvdaL-3LDtaGQ4a14St50neij04NYkVhR5vp22bJshLPXhw3-p52OAWHLOfYuDz26C2aRt9iJYf03lpXuK1dg7Q0ijPA7Hl9YdlYZbYbwz9AOYXMOPTiMn_VhGmDIy5GZq4stLYS4QAFTZ6UjC75x9EeATQNCuz4R1GwC9KOVP5xhW_S6Z--u1vTpyF3wnEDjmXR5ikXBebNia5o6sHm2TiCjjXSYlCTpr5nuySe1uLroOtfRLBeD8rMU9Z_wl5QMZkCj4RqY6h6FJjcPWg6GMeO8JqZb4a_Z0vP7mdCLQULPO6NdhDRFQvta6L6cdDFOw3JqCKie1dXvHuSD5FDvZ8dmaahzxOTTU7qYsZ0JyvsBHqxJ6TZw5AyjR1eWUavUiNqHP0bVkgTrt2Y3iLbk-5B6BuGsO7vS5wrPdzahHipIa71nYzWoHe_yMYJb3qVF1hbRgPeDe1pkze8kSof1o2iHAH-4DvU_ESQ5tbHii-PSqcEMedUARcg9FQP5ZaXHORelkIxRtxB2mcW1gqd8Uob9ZM4Xqh89VuemsT68ihrLC8Qr5QYTOb7ZwJyekgw3sjx_Ktskc8jtYSoL3QKmWOeZC_u8GPGnlfCci0KehxmFuYpGVvjH0cd30fKoxawaajeX-ORneP01Nj0NSeRwLtjJA9w0NkqcOl339oDVFStzTJDaiwY82JNYiHUIxx4CEqhnTmK4uZXO-mlT-Cs1paRw5ecTvkY1NYmcuudRf9-cKB3vn2TeDXXBm68NbojbvdOnzK4brs3uygQIlUCX0IGcT3V-Oapef0YPJoJU8rm10O4Og2VUJthPMoHhPOHSvZa44szuW3OsriueUtFwGuJhIm3_hFptpJOTRGSax0=w1920-h965?auditContext=prefetch" alt="Record" class="record-img">
+                    <div class="record-info">
+                        <span class="record-tag"><i class="fa-solid fa-heart-pulse"></i> Медицина</span>
+                        <h3 class="record-title">Медицинский пост</h3>
+                        <p class="record-desc">Самый долгий медицинский пост (Деревня Горная) - 3 часа</p>
+                    </div>
+                </a>
+
+                <!-- Карточка 2 -->
+                <a href="https://forum.gtaprovince.ru/topic/587928-province-rp-3-registraciya-rekordov/?do=findComment&comment=7310491" target="_blank" class="record-card">
+                    <img src="https://lh3.googleusercontent.com/rd-d/ALs6j_FpMd78ztmVcB-08jUzZjifohzovuRWSYsa0HDyds3DsHn5Urf1bOB1bNvrPvQOP-O-1vC8VzZzGMov5ufKIohqhIFHUF1QIg4LPhWtDQv69lnUnJhil3Y9mXYByx-2YpGHJ5YpGh46A4l9yGm9adlq2QjySPdM5ecbcG9agsHTGQQTczrZbOVLp-SJgf6LtHcdQMPX_EnP6XNrgpcL7cSxudbMkKVAWMOVuTj73WUreuaVpDd2AD5GQgYzLwtWQoHkxiCv1AqkG5Ov3OwPa8DSszmCxGo43HU_p1PrEG9YospJFWMUlM3NeaMOpzdO7CWHF12OrONySk-eNmhwyr1Sfrsge5GeV7gkJfWblG1_EvLUoDEA93Q7EuPlLd0xazlHKBPlIXZdYNizGBy0JclpQrxHlRpVNzXrDyItbdF36J2VIGVdeKLycQzyJISTmVnfM1ZjoNhcBZk-gEI00bHywot45ojHXCdKyU52bpwnnvkuAVlC1gBr-OGAhUWih9RthtkdMCoO8X9gfO5p-oK10FEANUgwYg57ANQyHFiMyBtu7kEuldyHcsDLtpbbHH1ObHrcLzplmqh6mO2BABVwFah26OJNXlE8rsn0jSK6Zxq9cHET7eM279XN8lQLLFVq2hjW4iI09bRPCHzxHI1xFS4yE6eAyFObUgr9jWpaAc5RemhmBOcjeYruabjkuXFnKFGC_XMiQQoXloZAlulc7Wtf0uIvaXm63q9Ayop7C8JcUoTdkJapuRMcLG7BLhXX6YVlE6wQ39lsYSCVQGGUwNwlHVMwXj8CnfQxN4ph5SbpCPlsBxz3xKIeB3ujTuoA51PpZQfZKIt-wizS_mZhrYk0OmCZeKq1P8gQICE3O_0UfNWKdqL7x5XyT6BfVX32ilIoNdpdEsNwrn74Bhy3s4WefPaA6b8iA3VhiXnF7_pq8_FfLyTpUDLu4yk_-R-dJyVEQThLLM7BZpxNFQGkOHb9rMccSG3M7CcdaVYYunLMOrfGcDkr0_UJ3OX3YkkCNEIWTSpkgIbp-2T2ks00B0JKYhEg52py8p5_5JAfK5o39u0ai4hieH5r5NUppj0iFLqbbBtKp8Wqa_Z2YbTz2ny6Wb9NxepnCZSsZQefFRLXApH6KJA0CiqanAbRglk=w1920-h965?auditContext=prefetch" alt="Record" class="record-img">
+                    <div class="record-info">
+                        <span class="record-tag"><i class="fa-solid fa-heart-pulse"></i> Медицина</span>
+                        <h3 class="record-title">Автомобильный медицинский патруль</h3>
+                        <p class="record-desc">Самый долгий автомобильный медицинский патруль (Областной маршрут номер 1) - 3 часа</p>
+                    </div>
+                </a>
+
+                <!-- Карточка 3 -->
+                <a href="https://forum.gtaprovince.ru/topic/587928-province-rp-3-registraciya-rekordov/?do=findComment&comment=7310491" target="_blank" class="record-card">
+                    <img src="https://lh3.googleusercontent.com/rd-d/ALs6j_Frnn_ay_RZsmab11WyC0h58sxmLtT5t6gXy-D6ySKKjFhDEhZg3SbFcRTyQKgms43wij_axzeFTFFe8qy3Cb4G5peue94wlLryxAj1L-enoGJ28sbn-0XcBCcElljdz5Qo8J159aRojSK1k4ipZYBeO6H0SOBTVN5PTDxij_j3N2hLTniJWxDUQQDs02y4f7-Bofruzol-6Tk4PG4zpH_E0HssJ_jA75rYmgOXoRY4739n7k3BByKEeJ4VI9ZVGOIP8AJFYTCs37bSSDdHKN5N9tU0OiYX0nZLPY6gnqbe_ITk2eJQzAdFvi-wLxOKfMqmmW-NOb67YgHekEA0CAdPnqTY2gs6fwBKbNNajNmLsueEQ9aNDA5zqU8BSwL_CfZD8m4n_hmhlatwgbbt9bBQsU03fxXzjw1zz9_VUh9QOofHIR-pt-LDMSdXHKal4WGrjUY6Mp-UFF_zFJKZG4W8hiEKAcHpS4Zaq6k05T5q4lffY9G92Eog8vth7i1ubOBSUuhq8uedi-ReH5coZk4eC4OzQ4xQELykk10v_4RisUdLKejrkq8oevVXnYssTuYjSLkDV4rGO4DJvuHD_OMcT_NIlIAnxR7WngSAoqdHwycDSj2skJfg_6my9xc7tGBjgQFbBUcvSkELgg-VcgziPc7JvDGbyN2URxnLkCbqIiU2cf3ZmGW9_pvEbR8thWbvhKkV_auPTR97Nyo4pLk4A0W_4O9KBcL-59HCJ7GgoI5B6uwufLQ_onMBM11H-uEPrW4mUmnp0ZPUqpBeHj2fScTXsGsSUnM45MwwNUhT7jyY0omimFivHqtXoLuzz1rw8ADBhonVNDYZNA73y-WDFAAfz79sN4mDYFd0tHqIGWsqw0PdE2ojkGlhaZFqKYXOU4Dcm8n5BqUcALtXqzWqOfJ60m4SBNKPAly65skNv9qNeIDoVKUkZyuRgJBsI_p3v6rS07LSeiNTNwlFzILbEO2K3C9hjhdJfHln0SUdY1rcwzQZzPMFzAAVt6dQLiaUGP65bpKzAdi9q-cRpiSyWRnN6-44pIMye698pNe1XM-2rtP27SsoC591TikRHpToS4SDk0BPfGopeMlIzf2ET7AghYWXJYdqSEPgWDSj-LuLTWA8UrPPkTZ0u_t8p6M=w1920-h965?auditContext=prefetch" alt="Record" class="record-img">
+                    <div class="record-info">
+                        <span class="record-tag"><i class="fa-solid fa-heart-pulse"></i> Медицина</span>
+                        <h3 class="record-title">Воздушный медицинский патруль</h3>
+                        <p class="record-desc">Самый долгий воздушный медицинский патруль (Областной маршрут номер 1) - 3 часа и 10 минут</p>
+                    </div>
+                </a>
+
+                <!-- Карточка 4 -->
+                <a href="https://forum.gtaprovince.ru/topic/587928-province-rp-3-registraciya-rekordov/?do=findComment&comment=7316399" target="_blank" class="record-card">
+                    <img src="https://static.wikia.nocookie.net/grand-theft-auto-province/images/5/5f/%D0%9D-%D0%92%D0%B8%D1%82%D1%8F%D0%B7%D1%8C%D0%9C_%D0%BD%D0%B0_%D0%94%D0%B5%D0%BA%D0%B0%D0%B1%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%B2.png/revision/latest/scale-to-width-down/1440?cb=20200512133351&path-prefix=ru" alt="Record" class="record-img">
+                    <div class="record-info">
+                        <span class="record-tag"><i class="fa-solid fa-briefcase"></i> Работа</span>
+                        <h3 class="record-title">Наибольший заработок</h3>
+                        <p class="record-desc">Наибольший заработок на 100-м маршруте трамвая в г. Невском — 605 830 рублей</p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- СОДЕРЖИМОЕ: ТРУДОВАЯ КНИГА -->
+        <div id="employment" class="content-section">
+            <div class="timeline">
+
+                <!-- Запись 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card" onclick="toggleDetails(this)">
+                        <div class="timeline-main-info">
+                            <div>
+                                <div class="job-fraction"><i class="fa-solid fa-hospital-user"></i> Заместитель Главного Врача</div>
+                                <div class="job-rank">ОКБ г. Мирного</div>
+                            </div>
+                            <div class="job-date">Настоящее время</div>
+                        </div>
+                        
+                        <!-- Выпадающий список карьерных повышений внутри ОКБ -->
+                        <div class="promo-details-panel">
+                            <div class="promotion-list">
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-people-pulling"></i> Заведующий ОНП (Восстановление)</span>
+                                    <span class="promo-date">24.11.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-walking-arrow-loop-left"></i> Заведующий ОНП (Ушел ПСЖ)</span>
+                                    <span class="promo-date">22.09.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> Заведующий ОНП</span>
+                                    <span class="promo-date">26.08.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> Заместитель Заведующего ОНП</span>
+                                    <span class="promo-date">12.08.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> мл. Врач - Хирург</span>
+                                    <span class="promo-date">25.07.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> Врач - терапевт</span>
+                                    <span class="promo-date">14.07.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> Врач - участковый</span>
+                                    <span class="promo-date">11.07.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-person-arrow-up-from-line"></i> Врач - стажёр</span>
+                                    <span class="promo-date">10.07.2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Запись 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card" onclick="toggleDetails(this)">
+                        <div class="timeline-main-info">
+                            <div>
+                                <div class="job-fraction"><i class="fa-solid fa-building-shield"></i> УГИБДД</div>
+                                <div class="job-rank">Полковник полиции</div>
+                            </div>
+                            <div class="job-date">Ранний период</div>
+                        </div>
+                        
+                        <!-- Выпадающий список карьерных повышений внутри УГИБДД -->
+                        <div class="promo-details-panel">
+                            <div class="promotion-list">
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-star-sharp"></i> Полковник</span>
+                                    <span class="promo-date">15.08.2025</span>
+                                </div>
+                                <div class="promotion-item">
+                                    <span class="promo-rank"><i class="fa-solid fa-star"></i> Подполковник</span>
+                                    <span class="promo-date">10.05.2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- СОДЕРЖИМОЕ: РП БИОГРАФИЯ -->
+        <div id="biography" class="content-section">
+            <div class="bio-container">
+                
+                <!-- Анкетная карточка -->
+                <div class="bio-profile-card">
+                    <div class="bio-avatar-wrapper">
+                        <img src="https://github.com/Arthdbd/Wo-Kead/blob/main/%D0%9B%D1%83%D1%87%D1%88%D0%B0%D1%8F%20%D0%B0%D0%B2%D0%B0%20%D0%9D%D0%9A.png?raw=true" alt="Артем Никольский" class="bio-avatar">
+                    </div>
+                    <h2 class="bio-name">Артем Никольский</h2>
+                    <div class="bio-status">ЗГВ | ОКБ</div>
+                    
+                    <div class="bio-meta-list" id="bio-meta-list">
+                        <div class="bio-meta-item"><span class="bio-meta-label">Возраст:</span><span class="bio-meta-value">27 лет</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Национальность:</span><span class="bio-meta-value">Провинчанин</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Место рождения:</span><span class="bio-meta-value">г. Невский</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Место проживания:</span><span class="bio-meta-value">г. Невский</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Гражданство:</span><span class="bio-meta-value">Респ. Провинция</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Профессия:</span><span class="bio-meta-value">Врач</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Мировоззрение:</span><span class="bio-meta-value">Эклектическое</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Семейное положение:</span><span class="bio-meta-value">Не женат</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Пол:</span><span class="bio-meta-value">Мужской</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Рост / Вес:</span><span class="bio-meta-value">172 см / 60 кг</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Цвет глаз:</span><span class="bio-meta-value">Глаза-хамелеоны</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Цвет кожи:</span><span class="bio-meta-value">Светлый</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Волосы:</span><span class="bio-meta-value">Золотисто-каштановые</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Телосложение:</span><span class="bio-meta-value">Мезо-эктоморф</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Татуировки:</span><span class="bio-meta-value">Отсутствуют</span></div>
+                        <div class="bio-meta-item"><span class="bio-meta-label">Образование:</span><span class="bio-meta-value">Высшее медицинское</span></div>
+                    </div>
+                </div>
+
+                <!-- Текстовое описание -->
+                <div class="bio-text-panel" id="bio-text-panel">
+                    
+                    <div class="bio-section-block">
+                        <h3>Детство</h3>
+                        <p>Артем родился 21 сентября в семье Виталия и Светланы. С самого детства его окружали тепло, забота и спокойная домашняя атмосфера. Отец Артема был военнослужащим, и именно он с ранних лет привил сыну интерес к медицине, обучив его базовым навыкам как тактической, так и гражданской помощи. Благодаря отцу, Артем еще ребенком отлично освоил азы оказания первой помощи, что заложило фундамент его будущих знаний.</p>
+                        <p>Мать Артема, Светлана, была главной хранительницей тепла и уюта в их доме. Именно она создавала ту неповторимую атмосферу гармонии, в которой рос мальчик. Светлана воспитала в Артеме искреннюю доброту, чуткость и желание всегда приходить на помощь людям. Она научила его сопереживанию и мудрости, заложив те самые человеческие качества, которые в будущем помогли ему стать не просто врачом, а настоящим наставником для коллег.</p>
+                        <p>С ранних лет Артем проявлял интерес к окружающему миру. Он был крайне любознательным ребенком: черпал знания не только из книг, которые читали ему родители, но и из мультфильмов, где старался подмечать детали и находить ответы на свои вопросы. Ему нравилось самостоятельно разбираться в том, что казалось сложным. Именно в эти годы у него сформировался важный жизненный принцип: к решению любых задач он привык подходить спокойно, креативно и ответственно. Родители всегда гордились его способностью находить выход из самых необычных ситуаций.</p>
+                    </div>
+
+                    <div class="bio-section-block">
+                        <h3>Юность</h3>
+                        <p>В школьные годы Артем не относился к тем ученикам, которые постоянно носили с собой кипы тяжелых учебников. Однако на уроках он поразительно быстро улавливал суть любых объяснений. Ему легко давались многие предметы, но именно биология отличилась наибольшей простотой, оставаясь максимально понятной и логичной в освоении. В изучении данной науки ощущалась удивительная легкость: устройство живого организма виделось Артему ясным и естественным, что и стало решающим фактором в определении его будущего дела. Он быстро находил для сложных задач чёткие, точные, а иногда и нестандартные решения. К окончанию школы выбор стал для него очевидным — Артем решил освоить профессию врача и посвятить свое рабочее дело медицине.</p>
+                    </div>
+
+                    <div class="bio-section-block">
+                        <h3>Взрослая жизнь</h3>
+                        <p>После окончания медицинского вуза Артем начал свою профессиональную деятельность в Областной клинической больнице города Мирного. Свой путь он начал с младшего состава, где ежедневно сталкивался с реальной практикой. Еще будучи в младшем составе, Артем проявлял превосходную активность: ему искренне нравилось помогать менее опытным сотрудникам, делиться знаниями и подсказывать коллегам в сложных ситуациях. Такая самоотдача, профессионализм и естественное стремление быть полезным не остались незамеченными, что со временем логично переросло в назначение на должность в старшем составе больницы.</p>
+                        <p>Став частью старшего состава, он проявил себя как грамотный руководитель: сотрудники младшего звена искренне уважали его за человечность. К нему никогда не боялись обратиться за советом — коллеги знали, что Артем всегда подскажет и поможет.</p>
+                        <p>В этот же период Артем решил сменить обстановку и вдохнуть в свою жизнь новые краски, переехав в стильные современные апартаменты в городе Невский. Именно тогда он встретил очаровательную девушку, ставшую для него самым близким человеком. Артем полюбил её бесконечно, искренне и всей душой. Он подарил ей в своем сердце особенное, самое теплое и защищенное местечко. Их объединяло невероятно много общего, а их поразительная схожесть во взглядах, интересах и характерах стала тем прочным фундаментом, на котором выстроилась их глубокая связь. Благодаря многому общему они всегда заняты в одной сфере деятельности, даже если меняют ее — это позволяло им вместе развиваться, придумывать новые идеи и реализовывать по-настоящему грандиозные проекты.</p>
+                        <p>Параллельно у него появился небольшой автопарк. Он не стремился к роскоши, но ценил красивые, элегантные и надежные автомобили. Иногда вечером он просто предлагал прокатиться по ночному городу, чтобы отвлечься от будней рядом с любимой.</p>
+                    </div>
+
+                    <div class="bio-section-block">
+                        <h3>Наше время</h3>
+                        <p>Сегодня Артем продолжает работать в ОКБ города Мирного, помогая людям и делясь опытом. Его жизнь проходит в привычном ритме: ответственные смены, работа с коллективом и волшебные вечера.</p>
+                        <p>Но особенно ценным для него остается время рядом с любимым человеком. Эти вечера всегда наполнены особым теплом и неповторимым уютом. Прогулки по вечернему городу, увлекательные и неоценимо приятные разговоры, совместные поездки и творческие поиски помогают отвлечься от работы. Им нравится проводить время активно, придумывая новые развлечения, или же просто оставаться дома в их уютной и защищенной атмосфере, вместе готовать что-то особенное и радовать друг друга мелочами. Эти моменты искреннего счастья, чувств и приятных эмоций, когда они вместе создают что-то уникальное и делают друг друга только чудеснее, являются для Артема самой большой ценностью.</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Переключение вкладок -->
+    <script>
+        function openTab(evt, tabId) {
+            let contentSections = document.getElementsByClassName("content-section");
+            for (let i = 0; i < contentSections.length; i++) {
+                contentSections[i].classList.remove("active");
+            }
+
+            let tabBtns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove("active");
+            }
+
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        /* Оптимизированное раскрытие: закрываем другие открытые карточки перед открытием новой */
+        function toggleDetails(card) {
+            const allCards = document.querySelectorAll('.timeline-card');
+            allCards.forEach(item => {
+                if (item !== card) {
+                    item.classList.remove('expanded');
+                }
+            });
+            card.classList.toggle('expanded');
+        }
+
+        // Плавное следование интерактивного свечения и кастомного курсора
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        
+        let dotX = mouseX;
+        let dotY = mouseY;
+        let ringX = mouseX;
+        let ringY = mouseY;
+        let glowX = mouseX;
+        let glowY = mouseY;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        const dotEl = document.getElementById('custom-cursor-dot');
+        const ringEl = document.getElementById('custom-cursor-ring');
+        const glowEl = document.getElementById('interactive-bg-glow');
+
+        function animateCursor() {
+            // Эффект Lerp (линейная интерполяция) для плавности движения
+            dotX += (mouseX - dotX) * 0.35;
+            dotY += (mouseY - dotY) * 0.35;
+            
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+
+            glowX += (mouseX - glowX) * 0.04;
+            glowY += (mouseY - glowY) * 0.04;
+
+            dotEl.style.left = dotX + 'px';
+            dotEl.style.top = dotY + 'px';
+
+            ringEl.style.left = ringX + 'px';
+            ringEl.style.top = ringY + 'px';
+
+            glowEl.style.left = glowX + 'px';
+            glowEl.style.top = glowY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Добавляем класс .hovered для курсора при наведении на интерактивные объекты
+        const hoverables = document.querySelectorAll('.tab-btn, .record-card, .timeline-card, .bio-avatar');
+        hoverables.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                dotEl.classList.add('hovered');
+                ringEl.classList.add('hovered');
+            });
+            item.addEventListener('mouseleave', () => {
+                dotEl.classList.remove('hovered');
+                ringEl.classList.remove('hovered');
+            });
+        });
+
+        // Двухпозиционный snap-скролл анкеты (начало и конец)
+        const metaList = document.getElementById('bio-meta-list');
+        metaList.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                // Крутанули вниз — плавно мотаем в самый конец
+                metaList.scrollTo({
+                    top: metaList.scrollHeight,
+                    behavior: 'smooth'
+                });
+            } else {
+                // Крутанули вверх — плавно мотаем в самое начало
+                metaList.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }, { passive: false });
+
+        // Функция для реализации прокрутки перетаскиванием (Drag-to-Scroll) с зажатием ЛКМ
+        function makeDragScrollable(element) {
+            let isDown = false;
+            let startY;
+            let scrollTop;
+            let moved = false;
+
+            element.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return; // Только ЛКМ
+                isDown = true;
+                
+                // Добавляем класс сжатия курсора
+                dotEl.classList.add('grabbing');
+                ringEl.classList.add('grabbing');
+                
+                startY = e.pageY - element.offsetTop;
+                scrollTop = element.scrollTop;
+                moved = false;
+            });
+
+            element.addEventListener('mouseleave', () => {
+                if (isDown) {
+                    isDown = false;
+                    dotEl.classList.remove('grabbing');
+                    ringEl.classList.remove('grabbing');
+                }
+            });
+
+            element.addEventListener('mouseup', () => {
+                if (isDown) {
+                    isDown = false;
+                    dotEl.classList.remove('grabbing');
+                    ringEl.classList.remove('grabbing');
+                }
+            });
+
+            element.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                
+                const y = e.pageY - element.offsetTop;
+                const walk = (y - startY) * 1.5; // Скорость/множитель прокрутки
+                
+                if (Math.abs(walk) > 4) {
+                    moved = true; // Зафиксировали перетаскивание
+                }
+                element.scrollTop = scrollTop - walk;
+            });
+
+            // Предотвращаем клик по ссылкам при перетаскивании
+            element.addEventListener('click', (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        }
+
+        // Включаем прокрутку перетаскиванием для всех контейнеров
+        window.addEventListener('DOMContentLoaded', () => {
+            const containers = [
+                document.getElementById('records'),
+                document.getElementById('employment'),
+                document.getElementById('bio-meta-list'),
+                document.getElementById('bio-text-panel')
+            ];
+
+            containers.forEach(container => {
+                if (container) {
+                    makeDragScrollable(container);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
