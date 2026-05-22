@@ -49,7 +49,7 @@
             }
         ],
         "is_banned": false,
-        "two_factor_enabled": false,
+        "two_factor_enabled": true,
         "subscription_updated_by": "Artem_Nikolskiy",
         "subscription_updated_at": "wait",
         "two_factor_status": ""
