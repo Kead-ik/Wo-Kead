@@ -11,6 +11,7 @@
     
     <style>
         :root {
+            /* Слегка более светлый и насыщенный неоновый фон */
             --bg-gradient: linear-gradient(135deg, #18113c 0%, #2b1c5c 50%, #0f0a28 100%);
             --panel-bg: rgba(255, 255, 255, 0.05);
             --card-bg: rgba(255, 255, 255, 0.08);
@@ -28,7 +29,9 @@
             box-sizing: border-box;
             font-family: 'Montserrat', sans-serif;
             -webkit-font-smoothing: antialiased;
+            /* Полное скрытие системного курсора для создания кастомного */
             cursor: none !important;
+            user-select: none; /* Предотвращает случайное выделение текста */
         }
 
         body {
@@ -39,20 +42,21 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Полное отсутствие внешней прокрутки страницы */
         }
 
+        /* Полное скрытие скроллбаров во всех браузерах при сохранении возможности прокрутки */
         *::-webkit-scrollbar {
             width: 0px !important;
             height: 0px !important;
             display: none !important;
         }
         * {
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
+            scrollbar-width: none !important; /* Firefox */
+            -ms-overflow-style: none !important; /* IE и Edge */
         }
 
-
+        /* Размытые неоновые сферы на фоне */
         .bg-blur-sphere {
             position: absolute;
             border-radius: 50%;
@@ -66,6 +70,7 @@
         .sphere-1 { width: 500px; height: 500px; background: var(--accent-primary); top: -5%; left: 10%; }
         .sphere-2 { width: 600px; height: 600px; background: #621bc2; bottom: -10%; right: 10%; animation-delay: -6s; }
 
+        /* Мягкое свечение, следующее за курсором мыши на бэкграунде */
         .interactive-glow {
             position: fixed;
             width: 700px;
@@ -83,6 +88,7 @@
             100% { transform: scale(1.15) translate(30px, 40px); }
         }
 
+        /* Кастомный курсор: центральная точка */
         .custom-cursor-dot {
             width: 8px;
             height: 8px;
@@ -96,6 +102,7 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s, transform 0.2s;
         }
 
+        /* Кастомный курсор: плавно отстающий внешний круг */
         .custom-cursor-ring {
             width: 32px;
             height: 32px;
@@ -110,6 +117,7 @@
                         border-color 0.3s, background-color 0.3s;
         }
 
+        /* Эффект наведения курсора на кликабельные объекты */
         .custom-cursor-dot.hovered {
             width: 4px;
             height: 4px;
@@ -123,7 +131,7 @@
             background-color: rgba(179, 102, 255, 0.15);
         }
 
-
+        /* Эффект перетаскивания (сжатие кольца при drag) */
         .custom-cursor-dot.grabbing {
             transform: translate(-50%, -50%) scale(0.7);
             background-color: var(--accent-primary);
@@ -136,6 +144,7 @@
             background-color: rgba(179, 102, 255, 0.3);
         }
 
+        /* Главный контейнер кабинета */
         .main-container {
             position: relative;
             z-index: 1;
@@ -161,6 +170,7 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
+        /* Навигационная панель (Вкладки) */
         .nav-tabs {
             display: flex;
             justify-content: center;
@@ -197,12 +207,13 @@
             box-shadow: 0 0 20px rgba(179, 102, 255, 0.25), inset 0 0 0 1px rgba(179, 102, 255, 0.45);
         }
 
+        /* Секции контента */
         .content-section {
             flex: 1;
             padding: 40px;
             display: none;
             height: calc(100% - 90px);
-            overflow: hidden;
+            overflow: hidden; /* Скрываем общий скролл для секций, где нужен внутренний */
         }
 
         .content-section.active {
@@ -215,8 +226,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ВКЛАДКА 1: РЕКОРДЫ */
         #records {
-            overflow-y: auto; 
+            overflow-y: auto; /* Рекорды могут скроллиться полностью в своей вкладке */
         }
 
         .records-grid {
@@ -247,7 +259,7 @@
             height: 190px;
             object-fit: cover;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            pointer-events: none;
+            pointer-events: none; /* Защита от перетаскивания самой картинки браузером */
         }
 
         .record-info {
@@ -284,7 +296,7 @@
 
         /* ВКЛАДКА 2: ТРУДОВАЯ КНИГА */
         #employment {
-            overflow-y: auto;
+            overflow-y: auto; /* Скроллится полностью во вкладке */
         }
 
         .timeline {
@@ -321,13 +333,14 @@
             box-shadow: 0 0 12px var(--accent-primary);
         }
 
+        /* Кликабельная карточка трудовой книги */
         .timeline-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 24px 30px;
             border-radius: 20px;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Изменяем на column для укладки раскрывающегося списка */
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -337,6 +350,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
+        /* Основная строка фракции и должности */
         .timeline-main-info {
             display: flex;
             justify-content: space-between;
@@ -376,7 +390,7 @@
             letter-spacing: 0.5px;
         }
 
-
+        /* Раскрывающийся список повышений (Ускорено до 0.28s) */
         .promo-details-panel {
             max-height: 0;
             overflow: hidden;
@@ -388,13 +402,14 @@
         }
 
         .timeline-card.expanded .promo-details-panel {
-            max-height: 500px;
+            max-height: 500px; /* Достаточная высота для контента */
             opacity: 1;
             margin-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 18px;
         }
 
+        /* Список повышений внутри фракции */
         .promotion-list {
             display: flex;
             flex-direction: column;
@@ -448,9 +463,9 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-
+        /* ВКЛАДКА 3: РП БИОГРАФИЯ */
         #biography {
-            overflow: hidden;
+            overflow: hidden; /* Полностью убирает внешний скролл вкладки */
             height: 100%;
         }
 
@@ -471,7 +486,7 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Анкета не должна скроллиться */
         }
 
         .bio-avatar-wrapper {
@@ -517,7 +532,7 @@
             gap: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 20px;
-            overflow-y: auto;
+            overflow-y: auto; /* На случай маленьких экранов анкета имеет свой легкий скролл */
             padding-right: 5px;
         }
 
@@ -542,13 +557,14 @@
             padding-left: 10px;
         }
 
+        /* Биографический текст в рамке со скроллбаром внутри */
         .bio-text-panel {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
             padding: 40px;
             height: 100%;
-            overflow-y: auto;
+            overflow-y: auto; /* Внутренний скроллбар строго внутри рамки */
             scroll-behavior: smooth;
         }
 
@@ -591,6 +607,7 @@
             margin-bottom: 0;
         }
 
+        /* Адаптивный интерфейс для планшетов/мобилок */
         @media (max-width: 992px) {
             .main-container {
                 height: 90vh;
@@ -614,8 +631,9 @@
             }
             .bio-text-panel {
                 height: auto;
-                max-height: 450px;
+                max-height: 450px; /* Фиксация высоты для мобилок, чтобы скроллилось внутри рамки */
             }
+            /* На мобильных устройствах кастомный курсор может мешать, скрываем его */
             .custom-cursor-dot, .custom-cursor-ring {
                 display: none !important;
             }
@@ -646,15 +664,19 @@
 </head>
 <body>
 
+    <!-- Размытые декорации на бэкграунде -->
     <div class="bg-blur-sphere sphere-1"></div>
     <div class="bg-blur-sphere sphere-2"></div>
+    <!-- Световой круг, плавно следующий за курсором -->
     <div class="interactive-glow" id="interactive-bg-glow"></div>
 
+    <!-- Кастомные курсоры -->
     <div class="custom-cursor-dot" id="custom-cursor-dot"></div>
     <div class="custom-cursor-ring" id="custom-cursor-ring"></div>
 
     <div class="main-container">
         
+        <!-- Вкладки навигации -->
         <nav class="nav-tabs">
             <button class="tab-btn active" onclick="openTab(event, 'records')">
                 <i class="fa-solid fa-medal"></i> Рекорды
@@ -666,6 +688,8 @@
                 <i class="fa-solid fa-signature"></i> Биография
             </button>
         </nav>
+
+        <!-- СОДЕРЖИМОЕ: РЕКОРДЫ -->
         <div id="records" class="content-section active">
             <div class="records-grid">
 
@@ -722,6 +746,7 @@
             </div>
         </div>
 
+        <!-- СОДЕРЖИМОЕ: ТРУДОВАЯ КНИГА -->
         <div id="employment" class="content-section">
             <div class="timeline">
 
@@ -820,6 +845,7 @@
             </div>
         </div>
 
+        <!-- СОДЕРЖИМОЕ: РП БИОГРАФИЯ -->
         <div id="biography" class="content-section">
             <div class="bio-container">
                 
@@ -851,6 +877,7 @@
                     </div>
                 </div>
 
+                <!-- Текстовое описание -->
                 <div class="bio-text-panel" id="bio-text-panel">
                     
                     <div class="bio-section-block">
@@ -886,6 +913,7 @@
 
     </div>
 
+    <!-- Переключение вкладок -->
     <script>
         function openTab(evt, tabId) {
             let contentSections = document.getElementsByClassName("content-section");
@@ -902,6 +930,7 @@
             evt.currentTarget.classList.add("active");
         }
 
+        /* Оптимизированное раскрытие: закрываем другие открытые карточки перед открытием новой */
         function toggleDetails(card) {
             const allCards = document.querySelectorAll('.timeline-card');
             allCards.forEach(item => {
@@ -912,6 +941,7 @@
             card.classList.toggle('expanded');
         }
 
+        // Плавное следование интерактивного свечения и кастомного курсора
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         
@@ -932,6 +962,7 @@
         const glowEl = document.getElementById('interactive-bg-glow');
 
         function animateCursor() {
+            // Эффект Lerp (линейная интерполяция) для плавности движения
             dotX += (mouseX - dotX) * 0.35;
             dotY += (mouseY - dotY) * 0.35;
             
@@ -953,6 +984,8 @@
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
+
+        // Добавляем класс .hovered для курсора при наведении на интерактивные объекты
         const hoverables = document.querySelectorAll('.tab-btn, .record-card, .timeline-card, .bio-avatar');
         hoverables.forEach(item => {
             item.addEventListener('mouseenter', () => {
@@ -965,15 +998,18 @@
             });
         });
 
+        // Двухпозиционный snap-скролл анкеты (начало и конец)
         const metaList = document.getElementById('bio-meta-list');
         metaList.addEventListener('wheel', (e) => {
             e.preventDefault();
             if (e.deltaY > 0) {
+                // Крутанули вниз — плавно мотаем в самый конец
                 metaList.scrollTo({
                     top: metaList.scrollHeight,
                     behavior: 'smooth'
                 });
             } else {
+                // Крутанули вверх — плавно мотаем в самое начало
                 metaList.scrollTo({
                     top: 0,
                     behavior: 'smooth'
@@ -981,6 +1017,7 @@
             }
         }, { passive: false });
 
+        // Функция для реализации прокрутки перетаскиванием (Drag-to-Scroll) с зажатием ЛКМ
         function makeDragScrollable(element) {
             let isDown = false;
             let startY;
@@ -991,6 +1028,7 @@
                 if (e.button !== 0) return; // Только ЛКМ
                 isDown = true;
                 
+                // Добавляем класс сжатия курсора
                 dotEl.classList.add('grabbing');
                 ringEl.classList.add('grabbing');
                 
@@ -1020,14 +1058,15 @@
                 e.preventDefault();
                 
                 const y = e.pageY - element.offsetTop;
-                const walk = (y - startY) * 1.5;
+                const walk = (y - startY) * 1.5; // Скорость/множитель прокрутки
                 
                 if (Math.abs(walk) > 4) {
-                    moved = true;
+                    moved = true; // Зафиксировали перетаскивание
                 }
                 element.scrollTop = scrollTop - walk;
             });
 
+            // Предотвращаем клик по ссылкам при перетаскивании
             element.addEventListener('click', (e) => {
                 if (moved) {
                     e.preventDefault();
@@ -1035,6 +1074,8 @@
                 }
             }, true);
         }
+
+        // Включаем прокрутку перетаскиванием для всех контейнеров
         window.addEventListener('DOMContentLoaded', () => {
             const containers = [
                 document.getElementById('records'),
