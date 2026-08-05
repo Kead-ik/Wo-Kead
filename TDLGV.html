@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Только для лучшей ГВ ❤</title>
+  <title>Упрощение отчетности лучшей ГВ ❤</title>
   
   <!-- Иконка с белым сердечком (SVG встроено прямо в код) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
@@ -499,32 +499,40 @@
           if (!cleanText) return;
 
           if (isUrl) {
-            // Новый, более надежный метод копирования "чистой" ссылки без лишних стилей
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.innerHTML = `<a href="${cleanText}">${linkWordInput}</a>`;
-            document.body.appendChild(tempDiv);
+            // Создаем невидимый iframe. Он имеет чистые базовые стили браузера,
+            // поэтому стили нашего сайта (цвета, шрифты) не приклеятся к ссылке при копировании.
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+            document.body.appendChild(iframe);
 
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(tempDiv);
+            const doc = iframe.contentWindow.document;
+            // Помещаем туда ТОЛЬКО ссылку
+            doc.body.innerHTML = `<a href="${cleanText}">${linkWordInput}</a>`;
+
+            const selection = iframe.contentWindow.getSelection();
+            const range = doc.createRange();
+            
+            // Выделяем именно саму ссылку, а не весь документ
+            range.selectNode(doc.body.firstChild);
             selection.removeAllRanges();
             selection.addRange(range);
 
             try {
-              document.execCommand('copy');
+              doc.execCommand('copy');
               td.classList.add('copied');
               showToast('Скопировано!');
             } catch (err) {
               console.error('Ошибка копирования:', err);
-              // Если вдруг старый метод не сработал, копируем хотя бы текстом
               navigator.clipboard.writeText(cleanText);
             }
 
-            selection.removeAllRanges();
-            document.body.removeChild(tempDiv);
+            // Удаляем iframe после копирования
+            document.body.removeChild(iframe);
           } else {
+            // Обычный текст копируется как и раньше — чистым plain text'ом
             navigator.clipboard.writeText(cleanText).then(() => {
               td.classList.add('copied');
               showToast('Скопировано!');
