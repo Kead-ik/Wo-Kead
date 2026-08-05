@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Упрощение отчетности лучшей ГВ ❤</title>
   
-  <!-- Иконка с белым сердечком (SVG встроено прямо в код) -->
+  <!-- Иконка с белым сердечком -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
 
   <style>
@@ -443,6 +443,63 @@
     }
   }
 
+  // Функция гарантированного и чистого копирования ссылок
+  async function copyLinkToClipboard(url, linkText) {
+    const htmlSnippet = `<a href="${url}">${linkText}</a>`;
+
+    // 1. Пробуем современный Clipboard API с точным HTML-блоком (без стилей оформления сайта)
+    if (navigator.clipboard && window.ClipboardItem) {
+      try {
+        const htmlBlob = new Blob([htmlSnippet], { type: 'text/html' });
+        const textBlob = new Blob([linkText], { type: 'text/plain' });
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': htmlBlob,
+            'text/plain': textBlob
+          })
+        ]);
+        return true;
+      } catch (err) {
+        console.warn('ClipboardItem failed, fallback to execCommand...', err);
+      }
+    }
+
+    // 2. Резервный метод: редактируемый контейнер (без наследования стилей темы)
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.contentEditable = 'true';
+      tempDiv.style.position = 'fixed';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
+      tempDiv.style.opacity = '0';
+      tempDiv.innerHTML = htmlSnippet;
+      document.body.appendChild(tempDiv);
+
+      tempDiv.focus();
+      const range = document.createRange();
+      range.selectNodeContents(tempDiv);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const success = document.execCommand('copy');
+      sel.removeAllRanges();
+      document.body.removeChild(tempDiv);
+
+      if (success) return true;
+    } catch (err) {
+      console.error('execCommand failed:', err);
+    }
+
+    // 3. Крайний фолбэк: копирование обычного URL текстом
+    try {
+      await navigator.clipboard.writeText(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async function parseTable() {
     const rawData = document.getElementById('pasteArea').value;
     const linkWordInput = document.getElementById('linkWord').value.trim() || 'Клик';
@@ -495,44 +552,16 @@
           td.textContent = cleanText;
         }
 
-        td.addEventListener('click', () => {
+        td.addEventListener('click', async () => {
           if (!cleanText) return;
 
           if (isUrl) {
-            // Создаем невидимый iframe. Он имеет чистые базовые стили браузера,
-            // поэтому стили нашего сайта (цвета, шрифты) не приклеятся к ссылке при копировании.
-            const iframe = document.createElement('iframe');
-            iframe.style.position = 'absolute';
-            iframe.style.width = '0';
-            iframe.style.height = '0';
-            iframe.style.border = 'none';
-            document.body.appendChild(iframe);
-
-            const doc = iframe.contentWindow.document;
-            // Помещаем туда ТОЛЬКО ссылку
-            doc.body.innerHTML = `<a href="${cleanText}">${linkWordInput}</a>`;
-
-            const selection = iframe.contentWindow.getSelection();
-            const range = doc.createRange();
-            
-            // Выделяем именно саму ссылку, а не весь документ
-            range.selectNode(doc.body.firstChild);
-            selection.removeAllRanges();
-            selection.addRange(range);
-
-            try {
-              doc.execCommand('copy');
+            const copied = await copyLinkToClipboard(cleanText, linkWordInput);
+            if (copied) {
               td.classList.add('copied');
               showToast('Скопировано!');
-            } catch (err) {
-              console.error('Ошибка копирования:', err);
-              navigator.clipboard.writeText(cleanText);
             }
-
-            // Удаляем iframe после копирования
-            document.body.removeChild(iframe);
           } else {
-            // Обычный текст копируется как и раньше — чистым plain text'ом
             navigator.clipboard.writeText(cleanText).then(() => {
               td.classList.add('copied');
               showToast('Скопировано!');
