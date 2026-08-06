@@ -67,7 +67,9 @@
       font-family: inherit;
       font-size: 14px;
       box-sizing: border-box;
-      resize: vertical;
+      
+      /* Чтобы разрешить растягивать поле, поменяйте "none" на "vertical" или "both" */
+      resize: none; 
     }
 
     textarea:focus {
@@ -228,12 +230,12 @@
       opacity: 0.7;
     }
 
-    /* Анимация подсветки ячейки */
+    /* Анимация подсветки ячейки (без изменения размера) */
     @keyframes highlightPulse {
-      0% { background-color: var(--cell-bg); transform: scale(1); box-shadow: none; }
-      20% { background-color: var(--accent-color); transform: scale(1.08); box-shadow: 0 0 15px var(--accent-color); z-index: 10; position: relative; }
-      80% { background-color: var(--accent-color); transform: scale(1.08); box-shadow: 0 0 15px var(--accent-color); z-index: 10; position: relative; }
-      100% { background-color: var(--cell-bg); transform: scale(1); box-shadow: none; z-index: auto; }
+      0% { background-color: var(--cell-bg); box-shadow: none; }
+      20% { background-color: var(--accent-color); box-shadow: 0 0 12px 2px var(--accent-color); z-index: 10; position: relative; }
+      80% { background-color: var(--accent-color); box-shadow: 0 0 12px 2px var(--accent-color); z-index: 10; position: relative; }
+      100% { background-color: var(--cell-bg); box-shadow: none; z-index: auto; }
     }
 
     .highlight-pulse {
@@ -557,7 +559,6 @@
 
         if (!isUrl && cleanText.length > 0) {
           const lowerCase = cleanText.toLowerCase();
-          // Игнорируем авто-капс для слова say и команд say
           if (lowerCase !== 'say' && !lowerCase.startsWith('say ')) {
             cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
           }
@@ -617,7 +618,6 @@
         <span class="fix-to">${item.to}</span>
       `;
       
-      // Клик по исправлению для фокуса на ячейке
       row.addEventListener('click', () => {
         closeModal();
         const tds = Array.from(document.querySelectorAll('#outputTable td'));
@@ -637,7 +637,7 @@
             setTimeout(() => {
               targetTd.classList.remove('highlight-pulse');
             }, 1500);
-          }, 250); // Небольшая задержка, чтобы модалка успела исчезнуть
+          }, 250); 
         }
       });
 
