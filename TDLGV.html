@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Только для лучшей ГВ ❤</title>
   
-  <!-- Иконка с белым сердечком -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
 
   <style>
@@ -229,6 +228,18 @@
       opacity: 0.7;
     }
 
+    /* Анимация подсветки ячейки */
+    @keyframes highlightPulse {
+      0% { background-color: var(--cell-bg); transform: scale(1); box-shadow: none; }
+      20% { background-color: var(--accent-color); transform: scale(1.08); box-shadow: 0 0 15px var(--accent-color); z-index: 10; position: relative; }
+      80% { background-color: var(--accent-color); transform: scale(1.08); box-shadow: 0 0 15px var(--accent-color); z-index: 10; position: relative; }
+      100% { background-color: var(--cell-bg); transform: scale(1); box-shadow: none; z-index: auto; }
+    }
+
+    .highlight-pulse {
+      animation: highlightPulse 1.5s ease-in-out;
+    }
+
     /* Модальное окно */
     .modal-overlay {
       position: fixed;
@@ -290,6 +301,12 @@
       align-items: center;
       justify-content: space-between;
       font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .fix-item:hover {
+      background-color: var(--cell-hover);
     }
 
     .fix-from {
@@ -399,7 +416,7 @@
       maskedText = maskedText.replace(/\b[A-Za-z0-9]+(?:_[A-Za-z0-9]+)+\b/g, maskMatch);
       
       maskedText = maskedText.replace(/МП\s*\(\s*Ф\s*\)/gi, maskIfBoundary);
-      maskedText = maskedText.replace(/ЛЦТР|МПдГ|Собесы|Собес|СоМП|ФГМП|ГМП|МП|say/gi, maskIfBoundary);
+      maskedText = maskedText.replace(/ЛЦТР|МПдГ|Собесы|Собес|СоМП|ФГМП|ГМП|МП/gi, maskIfBoundary);
       maskedText = maskedText.replace(/[ЛТ]/gi, maskIfBoundary);
 
       const response = await fetch('https://speller.yandex.net/services/spellservice.json/checkText', {
@@ -443,11 +460,9 @@
     }
   }
 
-  // Функция гарантированного и чистого копирования ссылок
   async function copyLinkToClipboard(url, linkText) {
     const htmlSnippet = `<a href="${url}">${linkText}</a>`;
 
-    // 1. Пробуем современный Clipboard API с точным HTML-блоком (без стилей оформления сайта)
     if (navigator.clipboard && window.ClipboardItem) {
       try {
         const htmlBlob = new Blob([htmlSnippet], { type: 'text/html' });
@@ -464,7 +479,6 @@
       }
     }
 
-    // 2. Резервный метод: редактируемый контейнер (без наследования стилей темы)
     try {
       const tempDiv = document.createElement('div');
       tempDiv.contentEditable = 'true';
@@ -491,7 +505,6 @@
       console.error('execCommand failed:', err);
     }
 
-    // 3. Крайний фолбэк: копирование обычного URL текстом
     try {
       await navigator.clipboard.writeText(url);
       return true;
@@ -543,7 +556,11 @@
         const isUrl = /^https?:\/\/[^\s]+$/i.test(cleanText);
 
         if (!isUrl && cleanText.length > 0) {
-          cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+          const lowerCase = cleanText.toLowerCase();
+          // Игнорируем авто-капс для слова say и команд say
+          if (lowerCase !== 'say' && !lowerCase.startsWith('say ')) {
+            cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+          }
         }
 
         if (isUrl) {
@@ -580,7 +597,7 @@
     parseBtn.textContent = 'Построить таблицу';
 
     if (enableSpellcheck && lastFixes.length > 0) {
-      fixesBtn.textContent = `Список исправлений (${lastFixes.length})`;
+      fixesBtn.textContent = `Исправлений: ${lastFixes.length}`;
       fixesBtn.style.display = 'inline-block';
       showToast(`Исправлено ошибок: ${lastFixes.length}`);
     }
@@ -593,11 +610,37 @@
     lastFixes.forEach(item => {
       const row = document.createElement('div');
       row.className = 'fix-item';
+      row.title = 'Нажмите, чтобы показать исправленную ячейку';
       row.innerHTML = `
         <span class="fix-from">${item.from}</span>
         <span class="fix-arrow">➔</span>
         <span class="fix-to">${item.to}</span>
       `;
+      
+      // Клик по исправлению для фокуса на ячейке
+      row.addEventListener('click', () => {
+        closeModal();
+        const tds = Array.from(document.querySelectorAll('#outputTable td'));
+        
+        const safeTo = item.to.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(^|\\s|[.,!?'"])${safeTo}($|\\s|[.,!?'"])`, 'i');
+        
+        let targetTd = tds.find(td => regex.test(td.textContent));
+        if (!targetTd) {
+          targetTd = tds.find(td => td.textContent.includes(item.to));
+        }
+
+        if (targetTd) {
+          setTimeout(() => {
+            targetTd.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetTd.classList.add('highlight-pulse');
+            setTimeout(() => {
+              targetTd.classList.remove('highlight-pulse');
+            }, 1500);
+          }, 250); // Небольшая задержка, чтобы модалка успела исчезнуть
+        }
+      });
+
       modalList.appendChild(row);
     });
 
