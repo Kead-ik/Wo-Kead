@@ -28,7 +28,7 @@
     
     ::-webkit-scrollbar-track {
       background: transparent;
-      margin: 6px 0;
+      margin: 8px 0;
     }
     
     ::-webkit-scrollbar-thumb {
@@ -85,12 +85,18 @@
       }
     }
 
-    @keyframes shimmer {
+    @keyframes rowPopIn {
       0% {
-        background-position: -200% 0;
+        opacity: 0;
+        transform: scale(0.85);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.02);
       }
       100% {
-        background-position: 200% 0;
+        opacity: 1;
+        transform: scale(1);
       }
     }
 
@@ -102,17 +108,6 @@
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
-      }
-    }
-
-    @keyframes toastSlideOut {
-      from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-      to {
-        opacity: 0;
-        transform: translateY(10px) scale(0.92);
       }
     }
 
@@ -149,12 +144,6 @@
         opacity: 1;
         transform: translateX(0);
       }
-    }
-
-    @keyframes cellPopIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      60% { transform: scale(1.05); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
     }
 
     body {
@@ -242,7 +231,7 @@
     
     textarea::-webkit-scrollbar-track {
       background: transparent;
-      margin: 6px 0;
+      margin: 8px 0;
     }
 
     textarea::-webkit-scrollbar-thumb {
@@ -549,7 +538,7 @@
 
     .modal-body::-webkit-scrollbar-track {
       background: transparent;
-      margin: 6px 0;
+      margin: 8px 0;
     }
 
     .modal-body::-webkit-scrollbar-thumb {
@@ -845,7 +834,7 @@
       const tr = document.createElement('tr');
       const cells = rowText.split('\t');
 
-      cells.forEach((cellText, cellIndex) => {
+      cells.forEach((cellText) => {
         const td = document.createElement('td');
         let cleanText = cellText.trim();
 
@@ -863,8 +852,6 @@
         } else {
           td.textContent = cleanText;
         }
-
-        td.style.animation = `cellPopIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${(rowIndex * cells.length + cellIndex) * 0.03}s both`;
 
         td.addEventListener('click', async () => {
           if (!cleanText) return;
@@ -886,6 +873,7 @@
         tr.appendChild(td);
       });
 
+      tr.style.animation = `rowPopIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${rowIndex * 0.06}s both`;
       table.appendChild(tr);
     });
 
