@@ -21,27 +21,139 @@
     }
 
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
     }
     
     ::-webkit-scrollbar-track {
       background: transparent;
+      margin: 6px 0;
     }
     
     ::-webkit-scrollbar-thumb {
       background-color: #475569;
-      border-radius: 10px;
+      border-radius: 20px;
+      min-height: 40px;
+      transition: background-color 0.3s ease;
     }
     
     ::-webkit-scrollbar-thumb:hover {
       background-color: var(--accent-color);
+      border-radius: 20px;
     }
     
     ::-webkit-scrollbar-button {
       display: none !important;
       width: 0;
       height: 0;
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #475569 transparent;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(139, 92, 246, 0);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    @keyframes toastSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes toastSlideOut {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(10px) scale(0.92);
+      }
+    }
+
+    @keyframes highlightPulse {
+      0% { background-color: var(--cell-bg); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); transform: scale(1); }
+      15% { background-color: var(--accent-color); box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.6); transform: scale(1.04); }
+      30% { background-color: var(--accent-color); box-shadow: 0 0 14px 2px rgba(139, 92, 246, 0.4); transform: scale(1.02); }
+      70% { background-color: var(--accent-color); box-shadow: 0 0 8px 1px rgba(139, 92, 246, 0.2); transform: scale(1.01); }
+      100% { background-color: var(--cell-bg); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); transform: scale(1); }
+    }
+
+    @keyframes modalOverlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalCardIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.93);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fixItemIn {
+      from {
+        opacity: 0;
+        transform: translateX(-12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes cellPopIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      60% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     body {
@@ -73,14 +185,20 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      animation: fadeInUp 0.5s ease forwards;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    .input-section:hover {
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
     }
 
     label {
       font-size: 14px;
       font-weight: 500;
+      transition: color 0.2s ease;
     }
 
-    /* Обертка, которая жестко держит закругления и перехватывает фокус */
     .textarea-wrapper {
       width: 100%;
       height: 100px;
@@ -88,14 +206,15 @@
       border: 1px solid #475569;
       border-radius: 8px;
       box-sizing: border-box;
-      overflow: hidden; /* Обрезает все квадратные элементы внутри под закругления */
+      overflow: hidden;
       display: flex;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
     }
 
     .textarea-wrapper:focus-within {
       border-color: transparent;
-      box-shadow: 0 0 0 2px var(--accent-color);
+      box-shadow: 0 0 0 2px var(--accent-color), 0 0 20px 2px rgba(139, 92, 246, 0.15);
+      transform: translateY(-1px);
     }
 
     textarea {
@@ -104,34 +223,37 @@
       height: 100%;
       background-color: transparent;
       color: var(--text-color);
-      border: none; /* Бордер теперь у обертки */
+      border: none;
       padding: 12px;
       font-family: inherit;
       font-size: 14px;
       box-sizing: border-box;
-      resize: none; 
-      outline: none; /* Убираем стандартное выделение */
-      
+      resize: none;
+      outline: none;
+      transition: color 0.2s ease;
       scrollbar-width: thin;
       scrollbar-color: #475569 transparent;
     }
 
     textarea::-webkit-scrollbar {
-      width: 6px;
+      width: 4px;
     }
     
     textarea::-webkit-scrollbar-track {
       background: transparent;
-      margin: 4px 0; /* Отступ, чтобы ползунок не упирался в края */
+      margin: 6px 0;
     }
 
     textarea::-webkit-scrollbar-thumb {
       background-color: #475569;
-      border-radius: 10px;
+      border-radius: 20px;
+      min-height: 30px;
+      transition: background-color 0.3s ease;
     }
 
     textarea::-webkit-scrollbar-thumb:hover {
       background-color: var(--accent-color);
+      border-radius: 20px;
     }
 
     textarea::-webkit-scrollbar-button {
@@ -159,16 +281,27 @@
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s ease, opacity 0.2s ease;
+      transition: background-color 0.25s ease, opacity 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     button:hover {
       background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+    }
+
+    button:active {
+      transform: translateY(0) scale(0.96);
+      transition: transform 0.1s ease;
     }
 
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     button.clear-btn {
@@ -177,6 +310,12 @@
 
     button.clear-btn:hover {
       background-color: #64748b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(71, 85, 105, 0.35);
+    }
+
+    button.clear-btn:active {
+      transform: translateY(0) scale(0.96);
     }
 
     button.fixes-btn {
@@ -185,6 +324,30 @@
 
     button.fixes-btn:hover {
       background-color: #0369a1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);
+    }
+
+    button.fixes-btn:active {
+      transform: translateY(0) scale(0.96);
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    button:active::after {
+      width: 300px;
+      height: 300px;
     }
 
     .right-controls {
@@ -200,6 +363,11 @@
       align-items: center;
       gap: 4px;
       cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .spellcheck-option:hover {
+      color: #cbd5e1;
     }
 
     .spellcheck-option input {
@@ -218,7 +386,7 @@
       font-size: 12px;
       text-align: center;
       box-sizing: border-box;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
 
     .link-word-input:focus {
@@ -226,6 +394,8 @@
       border-color: var(--accent-color);
       color: #ffffff;
       background-color: var(--bg-color);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+      transform: translateY(-1px);
     }
 
     .table-wrapper {
@@ -234,6 +404,12 @@
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       overflow-x: auto;
+      animation: fadeInScale 0.45s ease forwards;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .table-wrapper:hover {
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
     }
 
     table {
@@ -257,7 +433,7 @@
       border-radius: 6px;
       cursor: pointer;
       user-select: none;
-      transition: all 0.2s ease;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       white-space: nowrap;
       font-size: 13px;
       box-sizing: border-box;
@@ -268,6 +444,14 @@
 
     td:hover {
       background-color: var(--cell-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    td:active {
+      transform: scale(0.93);
+      transition: transform 0.08s ease;
     }
 
     td a.table-link {
@@ -281,6 +465,8 @@
       color: var(--text-copied);
       border-color: var(--border-copied);
       opacity: 0.5;
+      transform: scale(0.95);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     td.copied a.table-link {
@@ -289,18 +475,11 @@
 
     td.copied:hover {
       opacity: 0.7;
-    }
-
-    /* Анимация подсветки ячейки (без изменения размера) */
-    @keyframes highlightPulse {
-      0% { background-color: var(--cell-bg); box-shadow: none; }
-      20% { background-color: var(--accent-color); box-shadow: 0 0 12px 2px var(--accent-color); z-index: 10; position: relative; }
-      80% { background-color: var(--accent-color); box-shadow: 0 0 12px 2px var(--accent-color); z-index: 10; position: relative; }
-      100% { background-color: var(--cell-bg); box-shadow: none; z-index: auto; }
+      transform: scale(0.95);
     }
 
     .highlight-pulse {
-      animation: highlightPulse 1.5s ease-in-out;
+      animation: highlightPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .modal-overlay {
@@ -317,12 +496,13 @@
       z-index: 1000;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.3s ease;
     }
 
     .modal-overlay.active {
       opacity: 1;
       pointer-events: auto;
+      animation: modalOverlayIn 0.3s ease forwards;
     }
 
     .modal-card {
@@ -337,6 +517,13 @@
       flex-direction: column;
       gap: 16px;
       max-height: 80vh;
+      transform: translateY(30px) scale(0.93);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+      animation: modalCardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     .modal-header {
@@ -353,6 +540,29 @@
       flex-direction: column;
       gap: 8px;
       padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 transparent;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 6px 0;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+      background-color: #475569;
+      border-radius: 20px;
+      min-height: 30px;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb:hover {
+      background-color: var(--accent-color);
+      border-radius: 20px;
     }
 
     .fix-item {
@@ -364,11 +574,32 @@
       justify-content: space-between;
       font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      animation: fixItemIn 0.35s ease forwards;
+      opacity: 0;
     }
+
+    .fix-item:nth-child(1) { animation-delay: 0.05s; }
+    .fix-item:nth-child(2) { animation-delay: 0.1s; }
+    .fix-item:nth-child(3) { animation-delay: 0.15s; }
+    .fix-item:nth-child(4) { animation-delay: 0.2s; }
+    .fix-item:nth-child(5) { animation-delay: 0.25s; }
+    .fix-item:nth-child(6) { animation-delay: 0.3s; }
+    .fix-item:nth-child(7) { animation-delay: 0.35s; }
+    .fix-item:nth-child(8) { animation-delay: 0.4s; }
+    .fix-item:nth-child(9) { animation-delay: 0.45s; }
+    .fix-item:nth-child(10) { animation-delay: 0.5s; }
+    .fix-item:nth-child(n+11) { animation-delay: 0.55s; }
 
     .fix-item:hover {
       background-color: var(--cell-hover);
+      transform: translateX(4px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .fix-item:active {
+      transform: scale(0.97);
+      transition: transform 0.1s ease;
     }
 
     .fix-from {
@@ -390,22 +621,24 @@
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background-color: var(--accent-color);
+      background: linear-gradient(135deg, var(--accent-color), #a78bfa);
       color: #fff;
       padding: 10px 20px;
-      border-radius: 8px;
+      border-radius: 20px;
       font-size: 14px;
       font-weight: 500;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px -3px rgba(139, 92, 246, 0.4);
       opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
+      transform: translateY(16px) scale(0.92);
       pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2000;
     }
 
     .toast.show {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
+      animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards, gentlePulse 2s ease-in-out 0.35s;
     }
   </style>
 </head>
@@ -609,11 +842,11 @@
 
     const rows = textToProcess.split(/\r?\n/);
 
-    rows.forEach(rowText => {
+    rows.forEach((rowText, rowIndex) => {
       const tr = document.createElement('tr');
       const cells = rowText.split('\t');
 
-      cells.forEach(cellText => {
+      cells.forEach((cellText, cellIndex) => {
         const td = document.createElement('td');
         let cleanText = cellText.trim();
 
@@ -631,6 +864,8 @@
         } else {
           td.textContent = cleanText;
         }
+
+        td.style.animation = `cellPopIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${(rowIndex * cells.length + cellIndex) * 0.03}s both`;
 
         td.addEventListener('click', async () => {
           if (!cleanText) return;
@@ -656,12 +891,17 @@
     });
 
     tableContainer.style.display = 'block';
+    tableContainer.style.animation = 'none';
+    tableContainer.offsetHeight;
+    tableContainer.style.animation = 'fadeInScale 0.45s ease forwards';
+    
     parseBtn.disabled = false;
     parseBtn.textContent = 'Построить таблицу';
 
     if (enableSpellcheck && lastFixes.length > 0) {
       fixesBtn.textContent = `Исправлений: ${lastFixes.length}`;
       fixesBtn.style.display = 'inline-block';
+      fixesBtn.style.animation = 'fadeInScale 0.3s ease forwards';
       showToast(`Исправлено ошибок: ${lastFixes.length}`);
     }
   }
@@ -698,7 +938,7 @@
             targetTd.classList.add('highlight-pulse');
             setTimeout(() => {
               targetTd.classList.remove('highlight-pulse');
-            }, 1500);
+            }, 1600);
           }, 250); 
         }
       });
@@ -714,11 +954,24 @@
   }
 
   function clearAll() {
-    document.getElementById('pasteArea').value = '';
-    document.getElementById('outputTable').innerHTML = '';
-    document.getElementById('tableWrapper').style.display = 'none';
-    document.getElementById('fixesBtn').style.display = 'none';
-    lastFixes = [];
+    const tableWrapper = document.getElementById('tableWrapper');
+    tableWrapper.style.animation = 'none';
+    tableWrapper.offsetHeight;
+    tableWrapper.style.opacity = '0';
+    tableWrapper.style.transform = 'scale(0.95)';
+    tableWrapper.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    
+    setTimeout(() => {
+      document.getElementById('pasteArea').value = '';
+      document.getElementById('outputTable').innerHTML = '';
+      document.getElementById('tableWrapper').style.display = 'none';
+      document.getElementById('fixesBtn').style.display = 'none';
+      tableWrapper.style.opacity = '';
+      tableWrapper.style.transform = '';
+      tableWrapper.style.transition = '';
+      tableWrapper.style.animation = '';
+      lastFixes = [];
+    }, 200);
   }
 
   function showToast(msg) {
@@ -728,7 +981,7 @@
     clearTimeout(window.toastTimer);
     window.toastTimer = setTimeout(() => {
       toast.classList.remove('show');
-    }, 1800);
+    }, 2000);
   }
 
   document.getElementById('fixesModal').addEventListener('click', (e) => {
