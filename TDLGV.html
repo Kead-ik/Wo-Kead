@@ -731,11 +731,22 @@
           const originalWord = err.word;
           const replacement = err.s[0];
 
+          // Вычисляем точные координаты ячейки до замены текста
+          const textBefore = correctedText.slice(0, err.pos);
+          const rowIndex = textBefore.split(/\r?\n/).length - 1;
+          const rowTextBefore = textBefore.split(/\r?\n/).pop();
+          const colIndex = rowTextBefore.split('\t').length - 1;
+
           const before = correctedText.slice(0, err.pos);
           const after = correctedText.slice(err.pos + err.len);
           correctedText = before + replacement + after;
 
-          fixes.unshift({ from: originalWord, to: replacement });
+          fixes.unshift({ 
+            from: originalWord, 
+            to: replacement,
+            row: rowIndex, // Сохраняем строку ячейки
+            col: colIndex  // Сохраняем столбец ячейки
+          });
         }
       }
 
@@ -839,8 +850,11 @@
       const tr = document.createElement('tr');
       const cells = rowText.split('\t');
 
-      cells.forEach((cellText) => {
+      cells.forEach((cellText, colIndex) => {
         const td = document.createElement('td');
+        // Присваиваем ячейке уникальный идентификатор по её координатам
+        td.id = `cell-${rowIndex}-${colIndex}`; 
+        
         let cleanText = cellText.trim();
 
         const isUrl = /^https?:\/\/[^\s]+$/i.test(cleanText);
@@ -915,22 +929,9 @@
       
       row.addEventListener('click', () => {
         closeModal();
-        const tds = Array.from(document.querySelectorAll('#outputTable td'));
         
-        // Экранируем спецсимволы в исправленном слове
-        const safeTo = item.to.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        
-        // Улучшенная регулярка: ищем слово целиком. 
-        // Символы по краям не должны быть кириллицей, латиницей, цифрами или подчеркиванием.
-        const regex = new RegExp(`(^|[^а-яА-ЯёЁa-zA-Z0-9_])${safeTo}([^а-яА-ЯёЁa-zA-Z0-9_]|$)`, 'i');
-        
-        let targetTd = tds.find(td => regex.test(td.textContent));
-        
-        // Резервный поиск, если точное совпадение не сработало 
-        // (переводим всё в нижний регистр для надежности)
-        if (!targetTd) {
-          targetTd = tds.find(td => td.textContent.toLowerCase().includes(item.to.toLowerCase()));
-        }
+        // Находим ровно ту ячейку, в которой была ошибка по её координатам
+        const targetTd = document.getElementById(`cell-${item.row}-${item.col}`);
 
         if (targetTd) {
           setTimeout(() => {
@@ -938,7 +939,6 @@
             
             document.querySelectorAll('.cell-btn-highlight').forEach(el => el.classList.remove('cell-btn-highlight'));
             
-            // Подсветка срабатывает визуально без изменения размеров ячейки
             targetTd.classList.add('cell-btn-highlight');
             setTimeout(() => {
               targetTd.classList.remove('cell-btn-highlight');
