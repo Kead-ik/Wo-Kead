@@ -917,12 +917,19 @@
         closeModal();
         const tds = Array.from(document.querySelectorAll('#outputTable td'));
         
+        // Экранируем спецсимволы в исправленном слове
         const safeTo = item.to.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(`(^|\\s|[.,!?'"])${safeTo}($|\\s|[.,!?'"])`, 'i');
+        
+        // Улучшенная регулярка: ищем слово целиком. 
+        // Символы по краям не должны быть кириллицей, латиницей, цифрами или подчеркиванием.
+        const regex = new RegExp(`(^|[^а-яА-ЯёЁa-zA-Z0-9_])${safeTo}([^а-яА-ЯёЁa-zA-Z0-9_]|$)`, 'i');
         
         let targetTd = tds.find(td => regex.test(td.textContent));
+        
+        // Резервный поиск, если точное совпадение не сработало 
+        // (переводим всё в нижний регистр для надежности)
         if (!targetTd) {
-          targetTd = tds.find(td => td.textContent.includes(item.to));
+          targetTd = tds.find(td => td.textContent.toLowerCase().includes(item.to.toLowerCase()));
         }
 
         if (targetTd) {
@@ -931,6 +938,7 @@
             
             document.querySelectorAll('.cell-btn-highlight').forEach(el => el.classList.remove('cell-btn-highlight'));
             
+            // Подсветка срабатывает визуально без изменения размеров ячейки
             targetTd.classList.add('cell-btn-highlight');
             setTimeout(() => {
               targetTd.classList.remove('cell-btn-highlight');
