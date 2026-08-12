@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Неоновые Крестики-Нолики</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #0a0a14;
+            --surface: #14142b;
+            --accent: #6c5ce7;
+            --accent2: #00cec9;
+            --accent3: #fd79a8;
+            --glass: rgba(20, 20, 45, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 24px;
+            --text: #e0e0f0;
+            --text-dim: rgba(224, 224, 240, 0.55);
+        }
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            user-select: none;
+            touch-action: none;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image:
+                radial-gradient(ellipse at 25% 15%, rgba(108, 92, 231, 0.18) 0%, transparent 65%),
+                radial-gradient(ellipse at 75% 70%, rgba(0, 206, 201, 0.13) 0%, transparent 60%);
+        }
+        #bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .game-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+            width: 100%;
+            max-width: 800px;
+            height: 100vh;
+            max-height: 780px;
+            justify-content: center;
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            width: 100%;
+        }
+        .card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 24px 70px rgba(108, 92, 231, 0.25);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo svg {
+            width: 30px;
+            height: 30px;
+            filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.4));
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .score-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-dim);
+        }
+        .score-item span {
+            color: var(--text);
+            font-weight: 600;
+            min-width: 26px;
+            text-align: right;
+        }
+        .btn-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.35s ease;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-menu:hover {
+            background: rgba(108, 92, 231, 0.15);
+            border-color: var(--accent);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .btn-menu svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+        .main-area {
+            display: flex;
+            flex-direction: row;
+            gap: 18px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .canvas-wrap {
+            position: relative;
+            padding: 6px;
+            aspect-ratio: 1/1;
+            flex: 0 0 auto;
+            max-width: 400px;
+            width: 100%;
+        }
+        .canvas-wrap .card {
+            padding: 4px;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 100%;
+        }
+        #gameCanvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 12px;
+            background: #0a0a14;
+            touch-action: none;
+            cursor: pointer;
+        }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 0 0 auto;
+            min-width: 120px;
+            max-width: 160px;
+        }
+        .info-card {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 14px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .info-card .label {
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .info-card .value {
+            font-weight: 600;
+            color: var(--accent2);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .mode-switch {
+            display: flex;
+            gap: 8px;
+        }
+        .mode-btn {
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            font-family: inherit;
+        }
+        .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.4);
+        }
+        .btn-restart {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            font-family: inherit;
+            touch-action: manipulation;
+        }
+        .btn-restart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(108, 92, 231, 0.5);
+        }
+        .btn-restart:active {
+            transform: scale(0.95);
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 12px 24px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 40px rgba(108, 92, 231, 0.4);
+            animation: toastIn 0.5s ease forwards, toastOut 0.5s ease 2.5s forwards;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastOut {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+        }
+        @media (max-width: 600px) {
+            .game-wrapper { padding: 6px; gap: 10px; max-height: 100vh; justify-content: flex-start; padding-top: 4px; }
+            .header { padding: 8px 14px; }
+            .logo { font-size: 1.0rem; }
+            .logo svg { width: 26px; height: 26px; }
+            .score-wrap { font-size: 0.75rem; gap: 12px; }
+            .main-area { gap: 12px; }
+            .canvas-wrap { max-width: 320px; padding: 4px; }
+            .sidebar { min-width: 90px; max-width: 120px; }
+            .info-card { padding: 6px 10px; font-size: 0.7rem; }
+            .info-card .value { font-size: 1.0rem; }
+            .controls { padding: 6px 14px 10px; flex-direction: column; align-items: stretch; gap: 6px; }
+            .mode-switch { justify-content: center; }
+            .btn-restart { padding: 5px 14px; font-size: 0.7rem; }
+            .toast { font-size: 0.75rem; padding: 8px 16px; white-space: normal; }
+        }
+        @media (max-width: 400px) {
+            .canvas-wrap { max-width: 240px; }
+            .sidebar { min-width: 70px; max-width: 90px; }
+            .info-card .value { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+    <canvas id="bg-particles"></canvas>
+
+    <div class="game-wrapper">
+        <header class="header card">
+            <div class="logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <circle cx="10" cy="10" r="4" stroke="#6c5ce7" stroke-width="2" fill="none"/>
+                    <path d="M16 4L22 16H10L16 4Z" fill="#00cec9" opacity="0.8"/>
+                    <rect x="20" y="18" width="8" height="8" rx="2" fill="#fd79a8" opacity="0.8"/>
+                </svg>
+                <span>Крестики-Нолики</span>
+            </div>
+            <div class="header-actions">
+                <div class="score-wrap">
+                    <div class="score-item" title="Победы">🏆 <span id="winsDisplay">0</span></div>
+                    <div class="score-item" title="Ничьи">🤝 <span id="drawsDisplay">0</span></div>
+                    <div class="score-item" title="Поражения">😞 <span id="lossesDisplay">0</span></div>
+                </div>
+                <a href="index.html" class="btn-menu" id="menuBtn">
+                    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3"/><path d="M9 15h6"/></svg>
+                    Меню
+                </a>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="canvas-wrap">
+                <div class="card">
+                    <canvas id="gameCanvas" width="400" height="400"></canvas>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="info-card">
+                    <span class="label">Режим</span>
+                    <span class="value" id="modeDisplay">2 игрока</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Ход</span>
+                    <span class="value" id="turnDisplay">❌</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Статус</span>
+                    <span class="value" id="statusDisplay">Игра</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls card">
+            <div class="mode-switch">
+                <button class="mode-btn active" id="modePvP">👥 2 игрока</button>
+                <button class="mode-btn" id="modePvAI">🤖 С ботом</button>
+            </div>
+            <button class="btn-restart" id="restartBtn">
+                🔄 Новая игра
+            </button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== ПРОФИЛЬ И ДОСТИЖЕНИЯ ==========
+            const ACHIEVEMENTS = {
+                FIRST_WIN: 'tictactoe_first_win',
+                FIRST_DRAW: 'tictactoe_first_draw',
+                WIN_STREAK_3: 'tictactoe_win_streak_3',
+                BEAT_BOT: 'tictactoe_beat_bot'
+            };
+            let unlockedAchievements = JSON.parse(localStorage.getItem('gamehub_achievements') || '[]');
+            let totalTime = parseInt(localStorage.getItem('gamehub_totalTime') || '0');
+            let sessionStartTime = Date.now();
+            let timeUpdateInterval = null;
+
+            function saveTotalTime() {
+                if (sessionStartTime) {
+                    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                    if (elapsed > 0) {
+                        totalTime += elapsed;
+                        localStorage.setItem('gamehub_totalTime', String(totalTime));
+                        sessionStartTime = Date.now();
+                    }
+                }
+            }
+
+            function startTimeSaver() {
+                if (timeUpdateInterval) clearInterval(timeUpdateInterval);
+                timeUpdateInterval = setInterval(() => {
+                    if (sessionStartTime) {
+                        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                        if (elapsed > 0) {
+                            totalTime += elapsed;
+                            localStorage.setItem('gamehub_totalTime', String(totalTime));
+                            sessionStartTime = Date.now();
+                        }
+                    }
+                }, 5000);
+            }
+
+            function unlockAchievement(achId) {
+                if (unlockedAchievements.includes(achId)) return false;
+                unlockedAchievements.push(achId);
+                localStorage.setItem('gamehub_achievements', JSON.stringify(unlockedAchievements));
+                let name = '', icon = '';
+                if (achId === ACHIEVEMENTS.FIRST_WIN) { name = 'Первая победа'; icon = '🏆'; }
+                else if (achId === ACHIEVEMENTS.FIRST_DRAW) { name = 'Ничья'; icon = '🤝'; }
+                else if (achId === ACHIEVEMENTS.WIN_STREAK_3) { name = 'Серия из 3 побед'; icon = '🔥'; }
+                else if (achId === ACHIEVEMENTS.BEAT_BOT) { name = 'Победа над ботом'; icon = '🤖'; }
+                showToast(`${icon} Достижение: ${name}`);
+                return true;
+            }
+
+            function showToast(message) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                container.appendChild(toast);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+            }
+
+            window.addEventListener('beforeunload', () => {
+                saveTotalTime();
+                if (timeUpdateInterval) clearInterval(timeUpdateInterval);
+            });
+
+            document.getElementById('menuBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                saveTotalTime();
+                if (timeUpdateInterval) clearInterval(timeUpdateInterval);
+                document.body.style.transition = 'opacity 0.4s ease';
+                document.body.style.opacity = '0';
+                setTimeout(() => { window.location.href = 'index.html'; }, 400);
+            });
+
+            // ========== ФОН С ЧАСТИЦАМИ ==========
+            const bgCanvas = document.getElementById('bg-particles');
+            const bgCtx = bgCanvas.getContext('2d');
+            let bgW, bgH;
+            const bgParticles = [];
+
+            function resizeBg() {
+                bgW = window.innerWidth;
+                bgH = window.innerHeight;
+                bgCanvas.width = bgW;
+                bgCanvas.height = bgH;
+            }
+            window.addEventListener('resize', resizeBg);
+            resizeBg();
+
+            class BgParticle {
+                constructor() { this.reset(true); }
+                reset(init) {
+                    this.x = Math.random() * bgW;
+                    this.y = init ? Math.random() * bgH : -10;
+                    this.size = Math.random() * 3 + 1.2;
+                    this.speedX = (Math.random() - 0.5) * 0.25;
+                    this.speedY = (Math.random() - 0.5) * 0.25 - 0.05;
+                    this.opacity = Math.random() * 0.4 + 0.08;
+                    const colors = ['#6c5ce7', '#00cec9', '#fd79a8', '#a29bfe', '#55efc4'];
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.life = Math.random() * 200 + 150;
+                    this.maxLife = this.life;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.life--;
+                    if (this.life <= 0 || this.y > bgH + 20 || this.x < -20 || this.x > bgW + 20) this.reset(false);
+                }
+                draw(ctx) {
+                    const alpha = this.opacity * (this.life / this.maxLife);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = alpha;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    if (this.size > 2) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = alpha * 0.15;
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            }
+            for (let i = 0; i < 85; i++) bgParticles.push(new BgParticle());
+            function animateBg() {
+                bgCtx.clearRect(0, 0, bgW, bgH);
+                for (const p of bgParticles) { p.update(); p.draw(bgCtx); }
+                requestAnimationFrame(animateBg);
+            }
+            animateBg();
+
+            // ========== ИГРА КРЕСТИКИ-НОЛИКИ ==========
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const SIZE = 400;
+            canvas.width = SIZE;
+            canvas.height = SIZE;
+
+            const winsDisplay = document.getElementById('winsDisplay');
+            const drawsDisplay = document.getElementById('drawsDisplay');
+            const lossesDisplay = document.getElementById('lossesDisplay');
+            const modeDisplay = document.getElementById('modeDisplay');
+            const turnDisplay = document.getElementById('turnDisplay');
+            const statusDisplay = document.getElementById('statusDisplay');
+            const modePvPBtn = document.getElementById('modePvP');
+            const modePvAIBtn = document.getElementById('modePvAI');
+            const restartBtn = document.getElementById('restartBtn');
+
+            let board = [['', '', ''], ['', '', ''], ['', '', '']];
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let gameMode = 'pvp'; // 'pvp' или 'pvai'
+            let winLine = null; // для подсветки линии победы
+            let stats = { wins: 0, draws: 0, losses: 0, streak: 0, maxStreak: 0 };
+
+            // загрузка статистики
+            const savedStats = JSON.parse(localStorage.getItem('tictactoe_stats'));
+            if (savedStats) stats = { ...stats, ...savedStats };
+
+            function saveStats() {
+                localStorage.setItem('tictactoe_stats', JSON.stringify(stats));
+            }
+
+            function updateStatsDisplay() {
+                winsDisplay.textContent = stats.wins;
+                drawsDisplay.textContent = stats.draws;
+                lossesDisplay.textContent = stats.losses;
+            }
+
+            function resetBoard() {
+                board = [['', '', ''], ['', '', ''], ['', '', '']];
+                currentPlayer = 'X';
+                gameActive = true;
+                winLine = null;
+                turnDisplay.textContent = currentPlayer === 'X' ? '❌' : '⭕';
+                statusDisplay.textContent = 'Игра';
+            }
+
+            function switchMode(mode) {
+                gameMode = mode;
+                modeDisplay.textContent = mode === 'pvp' ? '2 игрока' : 'С ботом';
+                modePvPBtn.classList.toggle('active', mode === 'pvp');
+                modePvAIBtn.classList.toggle('active', mode === 'pvai');
+                resetBoard();
+                drawBoard();
+                // если режим с ботом и сейчас ход бота (O), бот делает ход
+                if (gameMode === 'pvai' && currentPlayer === 'O' && gameActive) {
+                    setTimeout(botMove, 400);
+                }
+            }
+
+            function checkWin() {
+                const lines = [
+                    [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]],
+                    [[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]],
+                    [[0,0],[1,1],[2,2]], [[0,2],[1,1],[2,0]]
+                ];
+                for (const line of lines) {
+                    const [a, b, c] = line;
+                    if (board[a[0]][a[1]] && board[a[0]][a[1]] === board[b[0]][b[1]] && board[a[0]][a[1]] === board[c[0]][c[1]]) {
+                        return { winner: board[a[0]][a[1]], line };
+                    }
+                }
+                if (board.flat().every(cell => cell !== '')) return { winner: 'draw' };
+                return null;
+            }
+
+            function handleGameEnd(result) {
+                gameActive = false;
+                if (result.winner === 'draw') {
+                    statusDisplay.textContent = 'Ничья!';
+                    stats.draws++;
+                    if (!unlockedAchievements.includes(ACHIEVEMENTS.FIRST_DRAW)) unlockAchievement(ACHIEVEMENTS.FIRST_DRAW);
+                } else {
+                    winLine = result.line;
+                    statusDisplay.textContent = `Победил ${result.winner === 'X' ? '❌' : '⭕'}!`;
+                    if (result.winner === 'X') {
+                        stats.wins++;
+                        stats.streak++;
+                        if (stats.streak > stats.maxStreak) stats.maxStreak = stats.streak;
+                        if (!unlockedAchievements.includes(ACHIEVEMENTS.FIRST_WIN)) unlockAchievement(ACHIEVEMENTS.FIRST_WIN);
+                        if (stats.streak >= 3 && !unlockedAchievements.includes(ACHIEVEMENTS.WIN_STREAK_3)) unlockAchievement(ACHIEVEMENTS.WIN_STREAK_3);
+                        if (gameMode === 'pvai' && !unlockedAchievements.includes(ACHIEVEMENTS.BEAT_BOT)) unlockAchievement(ACHIEVEMENTS.BEAT_BOT);
+                    } else {
+                        stats.losses++;
+                        stats.streak = 0;
+                    }
+                }
+                saveStats();
+                updateStatsDisplay();
+                drawBoard();
+            }
+
+            function makeMove(row, col) {
+                if (!gameActive || board[row][col] !== '') return false;
+                board[row][col] = currentPlayer;
+                drawBoard();
+                const result = checkWin();
+                if (result) {
+                    handleGameEnd(result);
+                    return true;
+                }
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                turnDisplay.textContent = currentPlayer === 'X' ? '❌' : '⭕';
+                drawBoard();
+
+                // Бот ходит после смены игрока, если режим pvai и ход O
+                if (gameMode === 'pvai' && currentPlayer === 'O' && gameActive) {
+                    setTimeout(botMove, 400);
+                }
+                return true;
+            }
+
+            function botMove() {
+                if (!gameActive || currentPlayer !== 'O' || gameMode !== 'pvai') return;
+                const emptyCells = [];
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 3; c++) {
+                        if (board[r][c] === '') emptyCells.push({ r, c });
+                    }
+                }
+                if (emptyCells.length === 0) return;
+                const move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                makeMove(move.r, move.c);
+            }
+
+            function drawBoard() {
+                ctx.clearRect(0, 0, SIZE, SIZE);
+                const cellSize = SIZE / 3;
+
+                // сетка
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 3;
+                for (let i = 1; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * cellSize, 0);
+                    ctx.lineTo(i * cellSize, SIZE);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * cellSize);
+                    ctx.lineTo(SIZE, i * cellSize);
+                    ctx.stroke();
+                }
+
+                // символы
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 3; c++) {
+                        const x = c * cellSize + cellSize / 2;
+                        const y = r * cellSize + cellSize / 2;
+                        if (board[r][c] === 'X') {
+                            ctx.strokeStyle = '#6c5ce7';
+                            ctx.shadowColor = '#6c5ce7';
+                            ctx.shadowBlur = 15;
+                            ctx.lineWidth = 8;
+                            ctx.beginPath();
+                            ctx.moveTo(x - 30, y - 30);
+                            ctx.lineTo(x + 30, y + 30);
+                            ctx.moveTo(x + 30, y - 30);
+                            ctx.lineTo(x - 30, y + 30);
+                            ctx.stroke();
+                            ctx.shadowBlur = 0;
+                        } else if (board[r][c] === 'O') {
+                            ctx.strokeStyle = '#00cec9';
+                            ctx.shadowColor = '#00cec9';
+                            ctx.shadowBlur = 15;
+                            ctx.lineWidth = 8;
+                            ctx.beginPath();
+                            ctx.arc(x, y, 35, 0, Math.PI * 2);
+                            ctx.stroke();
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                }
+
+                // подсветка выигрышной линии
+                if (winLine && gameActive === false) {
+                    const [[r1,c1],[r2,c2],[r3,c3]] = winLine;
+                    const x1 = c1 * cellSize + cellSize/2, y1 = r1 * cellSize + cellSize/2;
+                    const x3 = c3 * cellSize + cellSize/2, y3 = r3 * cellSize + cellSize/2;
+                    ctx.strokeStyle = '#fd79a8';
+                    ctx.shadowColor = '#fd79a8';
+                    ctx.shadowBlur = 20;
+                    ctx.lineWidth = 5;
+                    ctx.setLineDash([10, 10]);
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x3, y3);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            canvas.addEventListener('click', (e) => {
+                if (!gameActive) return;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = SIZE / rect.width;
+                const scaleY = SIZE / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                const col = Math.floor(x / (SIZE / 3));
+                const row = Math.floor(y / (SIZE / 3));
+                if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+                    if (gameMode === 'pvai' && currentPlayer === 'O') return; // не даём ходить за бота
+                    makeMove(row, col);
+                }
+            });
+
+            restartBtn.addEventListener('click', () => {
+                resetBoard();
+                drawBoard();
+                if (gameMode === 'pvai' && currentPlayer === 'O' && gameActive) {
+                    setTimeout(botMove, 400);
+                }
+            });
+
+            modePvPBtn.addEventListener('click', () => switchMode('pvp'));
+            modePvAIBtn.addEventListener('click', () => switchMode('pvai'));
+
+            // Инициализация
+            switchMode('pvp');
+            updateStatsDisplay();
+            startTimeSaver();
+        })();
+    </script>
+</body>
+</html>

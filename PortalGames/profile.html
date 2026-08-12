@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль игрока</title>
+    <style>
+        :root {
+            --bg: #0a0a14;
+            --surface: #14142b;
+            --accent: #6c5ce7;
+            --accent2: #00cec9;
+            --accent3: #fd79a8;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --glass: rgba(20, 20, 45, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image:
+                radial-gradient(ellipse at 30% 20%, rgba(108,92,231,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(0,206,201,0.12) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        body.fade-in { opacity: 1; }
+        body.fade-out { opacity: 0; }
+
+        .particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
+        }
+        .particle {
+            position: absolute; border-radius: 50%; background: white; animation: floatUp linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.7); opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.3); opacity: 0.9; }
+        }
+
+        .profile-wrapper {
+            position: relative; z-index: 1; width: 100%; max-width: 450px; padding: 20px;
+        }
+
+        .profile-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 35px 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .avatar-section {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .avatar-img {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px rgba(108,92,231,0.5);
+            transition: 0.3s;
+        }
+        .avatar-section:hover .avatar-img {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(108,92,231,0.8);
+        }
+        .avatar-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s;
+            color: white; font-weight: bold; font-size: 0.9rem;
+        }
+        .avatar-section:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .nickname {
+            font-size: 1.8rem; font-weight: 700; margin: 15px 0 5px;
+        }
+        .stats {
+            display: flex; justify-content: space-around; margin: 25px 0;
+        }
+        .stat-item {
+            background: var(--surface);
+            border-radius: 16px; padding: 15px; width: 30%;
+        }
+        .stat-value { font-size: 1.5rem; font-weight: 700; }
+        .stat-label { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; }
+
+        /* Тонкие линии Hyper OS */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0;
+        }
+
+        .achievements-section {
+            margin: 10px 0 0;
+        }
+
+        .achievements {
+            text-align: left;
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* фон убран */
+            margin: 0;
+            padding: 0;
+        }
+        .achievements::-webkit-scrollbar {
+            display: none;
+        }
+
+        .achievement {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.4;
+            transition: 0.3s;
+        }
+        .achievement.unlocked {
+            opacity: 1;
+            border: 1px solid var(--accent);
+        }
+        .achievement-icon {
+            width: 36px; height: 36px;
+            background: var(--glass);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--accent2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-family: inherit;
+            text-transform: uppercase;
+            background: var(--surface2, #1a1a35);
+            color: #fff;
+            border: 1px solid var(--border);
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { background: #252545; transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); border: none; }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .file-input-label {
+            background: var(--accent);
+            color: white;
+            border-radius: 30px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .file-input-label:hover { background: #8b7cf0; }
+        .url-input {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="avatar-section" id="avatarSection">
+            <div class="avatar-img" id="avatarPreview"></div>
+            <div class="avatar-overlay">Сменить фото</div>
+        </div>
+        <div class="nickname" id="nicknameDisplay">Игрок</div>
+        <input type="text" id="nicknameInput" placeholder="Новый ник" style="display:none; margin:10px auto; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:white; width:80%; text-align:center;">
+        <button class="btn" id="editNickname">✏️ Изменить ник</button>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalTime">0м</div>
+                <div class="stat-label">Время в игре</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="gamesCount">3</div>
+                <div class="stat-label">Игр доступно</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="achievementsCount">0/7</div>
+                <div class="stat-label">Достижения</div>
+            </div>
+        </div>
+
+        <h3 style="margin:15px 0 5px;">🏆 Достижения</h3>
+        <div class="achievements-section">
+            <div class="divider"></div>
+            <div class="achievements" id="achievementsList"></div>
+            <div class="divider"></div>
+        </div>
+
+        <a href="index.html" class="btn" id="backBtn" style="margin-top:20px;">← В меню</a>
+    </div>
+</div>
+
+<!-- Модальное окно смены аватарки -->
+<div class="modal" id="avatarModal">
+    <div class="modal-content">
+        <h3>Выберите способ</h3>
+        <div class="modal-buttons">
+            <label class="file-input-label" for="fileInput">Загрузить с устройства</label>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            <input type="text" class="url-input" id="urlInput" placeholder="Или вставьте URL изображения">
+            <button class="btn btn-primary" id="applyUrl">Применить URL</button>
+            <button class="btn" id="closeModal">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Частицы
+        const pc = document.getElementById('particles');
+        for (let i=0; i<55; i++) {
+            const p = document.createElement('div'); p.className='particle';
+            p.style.left=Math.random()*100+'%'; p.style.width=p.style.height=Math.random()*5+2+'px';
+            p.style.background=['#6c5ce7','#00cec9','#fd79a8','#ffeaa7','#fff'][Math.floor(Math.random()*5)];
+            p.style.animationDuration=Math.random()*15+10+'s'; p.style.animationDelay=Math.random()*12+'s';
+            pc.appendChild(p);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('fade-in');
+            loadProfile();
+        });
+
+        let profile = JSON.parse(localStorage.getItem('gamehub_profile')) || {
+            nickname: 'Игрок',
+            avatar: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2240%22 r=%2230%22 fill=%22%23f39c12%22/%3E%3Ccircle cx=%2235%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Ccircle cx=%2265%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Cpath d=%22M40 50 Q50 60 60 50%22 stroke=%22%232c3e50%22 stroke-width=%223%22 fill=%22none%22/%3E%3C/svg%3E'
+        };
+
+        // Список достижений
+        const achievements = [
+            { id: 'cat_first', name: 'Первая прогулка', desc: 'Набрать 50 очков в котике', icon: '🐱' },
+            { id: 'cat_master', name: 'Кот-акробат', desc: 'Набрать 200 очков в котике', icon: '🌟' },
+            { id: 'snake_first', name: 'Змеиный укус', desc: 'Набрать 30 очков в змейке', icon: '🐍' },
+            { id: 'snake_master', name: 'Удав', desc: 'Набрать 150 очков в змейке', icon: '👑' },
+            { id: 'tetris_first', name: 'Линия', desc: 'Убрать первую линию в тетрисе', icon: '📏' },
+            { id: 'tetris_master', name: 'Мастер тетриса', desc: 'Убрать 10 линий в тетрисе', icon: '🏆' },
+            { id: 'tetris_god', name: 'Могу и больше!', desc: 'Убрать 50 линий в тетрисе', icon: '👑' },
+            // Достижения для крестиков-ноликов
+            { id: 'tictactoe_first_win', name: 'Семечко посажено', desc: 'Выиграть одну партию', icon: '🌱' },
+            { id: 'tictactoe_first_draw', name: 'Ничья', desc: 'Померитесь', icon: '🤝' },
+            { id: 'tictactoe_win_streak_3', name: 'Серия из 3 побед', desc: 'Выиграть 3 партии подряд', icon: '🔁' },
+            { id: 'tictactoe_beat_bot', name: 'Ну не бот', desc: 'Победи бота', icon: '🤖' }
+        ];
+
+        function saveProfile() {
+            localStorage.setItem('gamehub_profile', JSON.stringify(profile));
+        }
+
+        function updateUI() {
+            document.getElementById('avatarPreview').style.backgroundImage = `url(${profile.avatar})`;
+            document.getElementById('nicknameDisplay').textContent = profile.nickname;
+
+            const totalSeconds = parseInt(localStorage.getItem('gamehub_totalTime') || '0');
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            let timeStr = '';
+            if (h > 0) timeStr = `${h}ч ${m}м`;
+            else if (m > 0) timeStr = `${m}м ${s}с`;
+            else timeStr = `${s}с`;
+            document.getElementById('totalTime').textContent = timeStr;
+
+            const unlocked = JSON.parse(localStorage.getItem('gamehub_achievements') || '[]');
+            document.getElementById('achievementsCount').textContent = `${unlocked.length}/${achievements.length}`;
+
+            const list = document.getElementById('achievementsList');
+            list.innerHTML = '';
+            achievements.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'achievement' + (unlocked.includes(a.id) ? ' unlocked' : '');
+                div.innerHTML = `<div class="achievement-icon">${a.icon}</div> <div><strong>${a.name}</strong><br><small>${a.desc}</small></div>`;
+                list.appendChild(div);
+            });
+        }
+
+        function loadProfile() {
+            updateUI();
+        }
+
+        // Редактирование ника
+        const nickInput = document.getElementById('nicknameInput');
+        const nickDisplay = document.getElementById('nicknameDisplay');
+        const editBtn = document.getElementById('editNickname');
+        editBtn.addEventListener('click', () => {
+            if (nickInput.style.display === 'none' || nickInput.style.display === '') {
+                nickInput.style.display = 'block';
+                nickInput.value = profile.nickname;
+                editBtn.textContent = '💾 Сохранить';
+            } else {
+                profile.nickname = nickInput.value.trim() || 'Игрок';
+                saveProfile();
+                nickInput.style.display = 'none';
+                editBtn.textContent = '✏️ Изменить ник';
+                updateUI();
+            }
+        });
+
+        // Модальное окно аватарки
+        const modal = document.getElementById('avatarModal');
+        const avatarSection = document.getElementById('avatarSection');
+        const fileInput = document.getElementById('fileInput');
+        const urlInput = document.getElementById('urlInput');
+        const applyUrlBtn = document.getElementById('applyUrl');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        avatarSection.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    profile.avatar = ev.target.result;
+                    saveProfile();
+                    updateUI();
+                    modal.classList.remove('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        applyUrlBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (url) {
+                profile.avatar = url;
+                saveProfile();
+                updateUI();
+                modal.classList.remove('active');
+                urlInput.value = '';
+            }
+        });
+
+        // Назад с анимацией
+        document.getElementById('backBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.classList.add('fade-out');
+            setTimeout(() => { window.location.href = 'index.html'; }, 400);
+        });
+
+    })();
+</script>
+</body>
+</html>
