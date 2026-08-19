@@ -398,25 +398,6 @@
             opacity: 0.7;
             cursor: not-allowed;
         }
-        /* Стили для списка открытых комнат */
-        .open-room-select {
-            padding: 5px 8px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.05);
-            color: var(--text);
-            font-size: 0.8rem;
-            outline: none;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .open-room-select:focus {
-            border-color: var(--accent);
-        }
-        .open-room-label {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
     </style>
 </head>
 <body>
@@ -446,24 +427,12 @@
             </div>
         </header>
 
-        <!-- ОНЛАЙН-ПАНЕЛЬ (с открытыми комнатами) -->
+        <!-- ОНЛАЙН-ПАНЕЛЬ (без поля имени, имя берётся из профиля) -->
         <div class="card online-card" id="onlinePanel" style="display:none;">
             <span class="online-status" id="onlineStatus">Онлайн-режим</span>
             <button class="btn-online" id="btnCreateOnline">🎮 Создать игру</button>
             <input type="text" class="join-input" id="joinCodeInput" placeholder="Код" maxlength="6" autocomplete="off">
             <button class="btn-online" id="btnJoinOnline">🔗 Присоединиться</button>
-
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 5px;">
-                <span class="open-room-label">Открытые комнаты:</span>
-                <select id="openRoomSelect" class="open-room-select">
-                    <option value="roomA">Комната A</option>
-                    <option value="roomB">Комната B</option>
-                    <option value="roomC">Комната C</option>
-                </select>
-                <button class="btn-online" id="btnJoinOpenRoom">🔗 Подключиться</button>
-                <button class="btn-online" id="btnCreateOpenRoom">🎮 Создать открытую</button>
-            </div>
-
             <span class="online-code" id="opponentNameDisplay" style="display:none;"></span>
         </div>
 
@@ -666,9 +635,6 @@
             const btnJoinOnline = document.getElementById('btnJoinOnline');
             const joinCodeInput = document.getElementById('joinCodeInput');
             const opponentNameDisplay = document.getElementById('opponentNameDisplay');
-            const openRoomSelect = document.getElementById('openRoomSelect');
-            const btnJoinOpenRoom = document.getElementById('btnJoinOpenRoom');
-            const btnCreateOpenRoom = document.getElementById('btnCreateOpenRoom');
 
             let board = [['', '', ''], ['', '', ''], ['', '', '']];
             let currentPlayer = 'X';
@@ -1039,9 +1005,8 @@
                 }
             }
 
-            function setupPeerAsHost(customCode = null) {
-                if (isOnlineGame) cleanupOnline();
-                roomCode = customCode || generateRoomCode();
+            function setupPeerAsHost() {
+                roomCode = generateRoomCode();
                 joinCodeInput.value = roomCode;
                 joinCodeInput.readOnly = true;
                 joinCodeInput.disabled = true;
@@ -1093,7 +1058,6 @@
                     showToast('Введите код комнаты');
                     return;
                 }
-                if (isOnlineGame) cleanupOnline();
                 isHost = false;
                 btnCreateOnline.disabled = true;
                 btnJoinOnline.disabled = true;
@@ -1122,27 +1086,15 @@
                 });
             }
 
-            // Обработчики кнопок
+            // Обработчики кнопок онлайн-панели
             btnCreateOnline.addEventListener('click', () => {
+                if (isOnlineGame) cleanupOnline();
                 setupPeerAsHost();
             });
 
             btnJoinOnline.addEventListener('click', () => {
                 if (isOnlineGame) cleanupOnline();
                 setupPeerAsClient();
-            });
-
-            // Открытые комнаты
-            btnJoinOpenRoom.addEventListener('click', () => {
-                if (isOnlineGame) cleanupOnline();
-                const selectedCode = openRoomSelect.value;
-                joinCodeInput.value = selectedCode;
-                setupPeerAsClient();
-            });
-
-            btnCreateOpenRoom.addEventListener('click', () => {
-                const selectedCode = openRoomSelect.value;
-                setupPeerAsHost(selectedCode);
             });
 
             // Копирование кода при клике на поле ввода (если оно readonly)
