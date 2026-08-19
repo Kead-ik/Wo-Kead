@@ -7,6 +7,7 @@
     <!-- PeerJS для онлайн-игры -->
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
+        /* Ваши оригинальные стили (полностью оставлены без изменений) */
         * {
             margin: 0;
             padding: 0;
@@ -330,7 +331,7 @@
             .info-card .value { font-size: 0.85rem; }
         }
 
-        /* Добавленные стили для онлайн-панели */
+        /* Добавленные стили для онлайн-панели (с учётом readonly) */
         .online-card {
             padding: 12px 18px;
             display: flex;
@@ -391,6 +392,10 @@
         .join-input:focus {
             border-color: var(--accent);
         }
+        .join-input:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -420,7 +425,7 @@
             </div>
         </header>
 
-        <!-- Добавленная онлайн-панель -->
+        <!-- Онлайн-панель (поле ввода теперь будет отображать код комнаты при создании) -->
         <div class="card online-card" id="onlinePanel">
             <span class="online-status" id="onlineStatus">Онлайн-режим</span>
             <button class="btn-online" id="btnCreateOnline">🎮 Создать игру</button>
@@ -664,7 +669,6 @@
             }
 
             function switchMode(mode) {
-                // Если переключаем режим, отключаем онлайн-соединение
                 if (isOnlineGame) {
                     cleanupOnline();
                 }
@@ -674,7 +678,6 @@
                 modePvAIBtn.classList.toggle('active', mode === 'pvai');
                 modeOnlineBtn.classList.toggle('active', mode === 'online');
 
-                // Показываем/скрываем онлайн-панель
                 onlinePanel.style.display = (mode === 'online') ? 'flex' : 'none';
 
                 resetBoard();
@@ -730,9 +733,12 @@
             function makeMove(row, col) {
                 if (!gameActive || board[row][col] !== '') return false;
 
-                // В онлайн-режиме разрешаем ход только если сейчас ход игрока
-                if (isOnlineGame && myRole !== currentPlayer) {
-                    return false;
+                if (isOnlineGame) {
+                    if (myRole === null) {
+                        showToast('Ожидание роли...');
+                        return false;
+                    }
+                    if (myRole !== currentPlayer) return false;
                 }
 
                 board[row][col] = currentPlayer;
@@ -740,10 +746,9 @@
                 const result = checkWin();
                 if (result) {
                     handleGameEnd(result);
-                    // Отправляем результат сопернику
                     if (isOnlineGame && conn) {
-                        sendOnline({ type: 'move', row, col, player: currentPlayer });
-                        sendOnline({ type: 'end', result });
+                        sendOnline({ type: 'move', row, col, player: board[row][col] });
+                        // Не отправляем end, получатель сам определит конец после применения хода
                     }
                     return true;
                 }
@@ -751,12 +756,10 @@
                 turnDisplay.textContent = currentPlayer === 'X' ? '❌' : '⭕';
                 drawBoard();
 
-                // Если онлайн, отправляем ход
                 if (isOnlineGame && conn) {
                     sendOnline({ type: 'move', row, col, player: board[row][col] });
                 }
 
-                // Бот ходит после смены игрока, если режим pvai и ход O
                 if (gameMode === 'pvai' && currentPlayer === 'O' && gameActive) {
                     setTimeout(botMove, 400);
                 }
@@ -780,7 +783,6 @@
                 ctx.clearRect(0, 0, SIZE, SIZE);
                 const cellSize = SIZE / 3;
 
-                // сетка
                 ctx.strokeStyle = 'rgba(255,255,255,0.2)';
                 ctx.lineWidth = 3;
                 for (let i = 1; i < 3; i++) {
@@ -794,7 +796,6 @@
                     ctx.stroke();
                 }
 
-                // символы
                 for (let r = 0; r < 3; r++) {
                     for (let c = 0; c < 3; c++) {
                         const x = c * cellSize + cellSize / 2;
@@ -824,7 +825,6 @@
                     }
                 }
 
-                // подсветка выигрышной линии
                 if (winLine && gameActive === false) {
                     const [[r1,c1],[r2,c2],[r3,c3]] = winLine;
                     const x1 = c1 * cellSize + cellSize/2, y1 = r1 * cellSize + cellSize/2;
@@ -853,7 +853,7 @@
                 const col = Math.floor(x / (SIZE / 3));
                 const row = Math.floor(y / (SIZE / 3));
                 if (row >= 0 && row < 3 && col >= 0 && col < 3) {
-                    if (gameMode === 'pvai' && currentPlayer === 'O') return; // не даём ходить за бота
+                    if (gameMode === 'pvai' && currentPlayer === 'O') return;
                     makeMove(row, col);
                 }
             });
@@ -864,7 +864,6 @@
                 if (gameMode === 'pvai' && currentPlayer === 'O' && gameActive) {
                     setTimeout(botMove, 400);
                 }
-                // В онлайн режиме при перезапуске отправляем команду сопернику
                 if (isOnlineGame && conn) {
                     sendOnline({ type: 'restart' });
                 }
@@ -896,9 +895,12 @@
                 isOnlineGame = false;
                 myRole = null;
                 roomCode = null;
+                // Возвращаем поле ввода в исходное состояние
+                joinCodeInput.value = '';
+                joinCodeInput.readOnly = false;
+                joinCodeInput.disabled = false;
                 roomCodeDisplay.style.display = 'none';
                 roomCodeDisplay.textContent = '';
-                joinCodeInput.value = '';
                 btnCreateOnline.disabled = false;
                 btnJoinOnline.disabled = false;
                 updateOnlineStatus('Онлайн-режим', false);
@@ -915,7 +917,6 @@
             function handleOnlineData(data) {
                 if (!isOnlineGame) return;
                 if (data.type === 'move') {
-                    // Применяем ход соперника
                     board[data.row][data.col] = data.player;
                     drawBoard();
                     const result = checkWin();
@@ -927,6 +928,7 @@
                         drawBoard();
                     }
                 } else if (data.type === 'end') {
+                    // Запасной вариант, если не определили конец по move
                     gameActive = false;
                     winLine = data.result.line || null;
                     if (data.result.winner === 'draw') {
@@ -939,23 +941,32 @@
                     resetBoard();
                     drawBoard();
                 } else if (data.type === 'role') {
-                    // Получаем роль (только для создателя, который отправляет роль присоединившемуся)
                     myRole = data.role;
+                } else if (data.type === 'state') {
+                    board = data.board;
+                    currentPlayer = data.currentPlayer;
+                    gameActive = true;
+                    winLine = null;
+                    turnDisplay.textContent = currentPlayer === 'X' ? '❌' : '⭕';
+                    statusDisplay.textContent = 'Игра';
+                    drawBoard();
                 }
             }
 
             function setupPeerAsHost() {
                 roomCode = generateRoomCode();
+                // Отображаем код в поле ввода и блокируем его
+                joinCodeInput.value = roomCode;
+                joinCodeInput.readOnly = true;
+                joinCodeInput.disabled = true;
+
                 peer = new Peer(roomCode, { debug: 0 });
                 peer.on('open', (id) => {
-                    roomCodeDisplay.textContent = `Код: ${roomCode}`;
-                    roomCodeDisplay.style.display = 'inline';
                     updateOnlineStatus('Ожидание соперника...', false);
-                    myRole = 'X'; // создатель играет за X
+                    myRole = 'X';
                 });
                 peer.on('connection', (connection) => {
                     if (conn) {
-                        // Уже есть соединение, отклоняем новое
                         connection.close();
                         return;
                     }
@@ -964,8 +975,9 @@
                         isOnlineGame = true;
                         myRole = 'X';
                         updateOnlineStatus('Соперник подключился! Вы играете за X', true);
-                        // Отправляем роль сопернику (он будет O)
+                        // Отправляем роль и полное состояние игры
                         sendOnline({ type: 'role', role: 'O' });
+                        sendOnline({ type: 'state', board: board, currentPlayer: currentPlayer });
                         resetBoard();
                         drawBoard();
                     });
@@ -979,7 +991,8 @@
                     });
                 });
                 peer.on('error', (err) => {
-                    showToast('Ошибка: ' + err.type);
+                    console.error('PeerJS error:', err);
+                    showToast('Ошибка: ' + (err.type === 'unavailable-id' ? 'Код уже используется' : err.type));
                 });
             }
 
@@ -994,10 +1007,8 @@
                     conn = peer.connect(code, { reliable: true });
                     conn.on('open', () => {
                         isOnlineGame = true;
-                        myRole = 'O'; // присоединившийся играет за O, но дождёмся подтверждения роли
-                        updateOnlineStatus('Подключено! Вы играете за O', true);
-                        resetBoard();
-                        drawBoard();
+                        myRole = 'O'; // временно, пока не получим подтверждение от хоста
+                        updateOnlineStatus('Подключено! Ожидание данных...', true);
                     });
                     conn.on('data', handleOnlineData);
                     conn.on('close', () => {
@@ -1009,23 +1020,20 @@
                     });
                 });
                 peer.on('error', (err) => {
-                    showToast('Не удалось подключиться: ' + err.type);
+                    console.error('PeerJS error:', err);
+                    showToast('Не удалось подключиться: ' + (err.type === 'peer-unavailable' ? 'Комната не найдена' : err.type));
                 });
             }
 
             btnCreateOnline.addEventListener('click', () => {
-                if (isOnlineGame) {
-                    cleanupOnline();
-                }
+                if (isOnlineGame) cleanupOnline();
                 setupPeerAsHost();
                 btnCreateOnline.disabled = true;
                 btnJoinOnline.disabled = true;
             });
 
             btnJoinOnline.addEventListener('click', () => {
-                if (isOnlineGame) {
-                    cleanupOnline();
-                }
+                if (isOnlineGame) cleanupOnline();
                 setupPeerAsClient();
                 btnCreateOnline.disabled = true;
                 btnJoinOnline.disabled = true;
