@@ -144,7 +144,6 @@
         }
         .game-card:active { transform: scale(0.96); }
 
-        /* CSS-иконки */
         .icon-cat, .icon-snake, .icon-tetris, .icon-tic-tac-toe, .icon-tricky-towers {
             width: 70px; height: 70px; position: relative; display: inline-block;
         }
@@ -247,7 +246,6 @@
             100% { transform: rotate(-10deg) translateY(3px); }
         }
 
-        /* Иконка Tricky Towers */
         .icon-tricky-towers {
             width: 70px; height: 70px; position: relative; display: flex; align-items: center; justify-content: center;
         }
@@ -304,7 +302,6 @@
             renderAllCards();
         });
 
-        // Фоновые частицы
         const pc = document.getElementById('particles');
         for (let i=0; i<55; i++) {
             const p = document.createElement('div'); p.className='particle';
@@ -378,7 +375,6 @@
                     badge: 'Логика',
                     badgeClass: 'badge-tic-tac-toe'
                 },
-                // НОВАЯ КАРТОЧКА Tricky Towers
                 {
                     title: 'Tricky Towers',
                     desc: 'Построй свою башню, собирая бонусы!',
