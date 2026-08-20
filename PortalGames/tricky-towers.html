@@ -501,7 +501,6 @@
 
     <script>
         (function() {
-            // ===== ПРОФИЛЬ И ДОСТИЖЕНИЯ =====
             const ACHIEVEMENTS = {
                 TOWER_HEIGHT_10: 'tower_height_10',
                 TOWER_HEIGHT_20: 'tower_height_20',
@@ -633,7 +632,6 @@
             }
             animateBg();
 
-            // ===== TRICKY TOWERS =====
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const nextCanvas = document.getElementById('nextCanvas');
@@ -907,7 +905,6 @@
                     }
                 }
 
-                // превью
                 nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
                 if (nextPiece) {
                     const p = nextPiece;
@@ -943,7 +940,6 @@
                 animationFrame = requestAnimationFrame(gameLoop);
             }
 
-            // управление
             document.addEventListener('keydown', (e) => {
                 if (gameOver) return;
                 e.preventDefault();
