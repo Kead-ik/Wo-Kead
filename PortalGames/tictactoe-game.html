@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Неоновые Крестики-Нолики</title>
-    <!-- PeerJS для онлайн-игры -->
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
-        /* ====== ВСЕ ВАШИ СТИЛИ БЕЗ ИЗМЕНЕНИЙ ====== */
         * {
             margin: 0;
             padding: 0;
@@ -331,7 +329,6 @@
             .info-card .value { font-size: 0.85rem; }
         }
 
-        /* ====== ОНЛАЙН-ПАНЕЛЬ (ДОБАВЛЕННЫЕ СТИЛИ) ====== */
         .online-card {
             padding: 12px 18px;
             display: flex;
@@ -427,7 +424,6 @@
             </div>
         </header>
 
-        <!-- ОНЛАЙН-ПАНЕЛЬ (текстовый статус скрыт) -->
         <div class="card online-card" id="onlinePanel" style="display:none;">
             <span class="online-status" id="onlineStatus" style="display:none;"></span>
             <button class="btn-online" id="btnCreateOnline">✎ Создать игру</button>
@@ -472,7 +468,6 @@
 
     <script>
         (function() {
-            // ========== ПРОФИЛЬ И ДОСТИЖЕНИЯ ==========
             const ACHIEVEMENTS = {
                 FIRST_WIN: 'tictactoe_first_win',
                 FIRST_DRAW: 'tictactoe_first_draw',
@@ -484,7 +479,6 @@
             let sessionStartTime = Date.now();
             let timeUpdateInterval = null;
 
-            // Загружаем профиль для получения ника
             const profile = JSON.parse(localStorage.getItem('gamehub_profile')) || { nickname: 'Игрок' };
             const myNickname = profile.nickname || 'Игрок';
 
@@ -549,7 +543,6 @@
                 setTimeout(() => { window.location.href = 'index.html'; }, 400);
             });
 
-            // ========== ФОН С ЧАСТИЦАМИ ==========
             const bgCanvas = document.getElementById('bg-particles');
             const bgCtx = bgCanvas.getContext('2d');
             let bgW, bgH;
@@ -610,7 +603,6 @@
             }
             animateBg();
 
-            // ========== ИГРА КРЕСТИКИ-НОЛИКИ ==========
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const SIZE = 400;
@@ -628,7 +620,6 @@
             const modeOnlineBtn = document.getElementById('modeOnline');
             const restartBtn = document.getElementById('restartBtn');
 
-            // Онлайн-элементы
             const onlinePanel = document.getElementById('onlinePanel');
             const onlineStatus = document.getElementById('onlineStatus');
             const btnCreateOnline = document.getElementById('btnCreateOnline');
@@ -639,11 +630,10 @@
             let board = [['', '', ''], ['', '', ''], ['', '', '']];
             let currentPlayer = 'X';
             let gameActive = true;
-            let gameMode = 'online'; // Начальный режим — онлайн
+            let gameMode = 'online';
             let winLine = null;
             let stats = { wins: 0, draws: 0, losses: 0, streak: 0, maxStreak: 0 };
 
-            // Онлайн-переменные
             let peer = null;
             let conn = null;
             let myRole = null;
@@ -652,7 +642,6 @@
             let isHost = false;
             let opponentName = '';
 
-            // Загрузка статистики
             const savedStats = JSON.parse(localStorage.getItem('tictactoe_stats'));
             if (savedStats) stats = { ...stats, ...savedStats };
 
@@ -863,7 +852,6 @@
                 }
             });
 
-            // ====== ОНЛАЙН-ФУНКЦИИ ======
             function generateRoomCode() {
                 return Math.random().toString(36).substring(2, 6).toUpperCase();
             }
@@ -1049,7 +1037,6 @@
                 peer.on('error', (err) => {
                     console.error('PeerJS error:', err);
                     showToast('Ошибка: ' + (err.type === 'unavailable-id' ? 'Код уже используется' : err.type));
-                    // Разблокировка кнопок и сброс поля ввода
                     btnCreateOnline.disabled = false;
                     btnJoinOnline.disabled = false;
                     joinCodeInput.readOnly = false;
@@ -1073,7 +1060,7 @@
                     conn = peer.connect(code, { reliable: true });
                     conn.on('open', () => {
                         isOnlineGame = true;
-                        myRole = 'O'; // временно, пока не получим роль от хоста
+                        myRole = 'O';
                         updateOnlineStatus('Подключено! Ожидание данных...', true);
                         sendOnline({ type: 'hello', name: myNickname });
                     });
@@ -1089,7 +1076,6 @@
                 peer.on('error', (err) => {
                     console.error('PeerJS error:', err);
                     showToast('Не удалось подключиться: ' + (err.type === 'peer-unavailable' ? 'Комната не найдена' : err.type));
-                    // Разблокировка кнопок
                     btnCreateOnline.disabled = false;
                     btnJoinOnline.disabled = false;
                     joinCodeInput.readOnly = false;
@@ -1097,7 +1083,6 @@
                 });
             }
 
-            // Обработчики кнопок онлайн-панели
             btnCreateOnline.addEventListener('click', () => {
                 if (isOnlineGame) cleanupOnline();
                 setupPeerAsHost();
@@ -1108,20 +1093,17 @@
                 setupPeerAsClient();
             });
 
-            // Копирование кода при клике на поле ввода (если оно readonly)
             joinCodeInput.addEventListener('click', () => {
                 if (joinCodeInput.readOnly && joinCodeInput.value) {
                     copyToClipboard(joinCodeInput.value);
                 }
             });
 
-            // Обработчик кнопки "Новая игра"
             restartBtn.addEventListener('click', () => {
                 if (isOnlineGame) {
                     if (isHost) {
                         restartOnline();
                     } else {
-                        // Гость отправляет запрос
                         if (conn && conn.open) {
                             sendOnline({ type: 'request_restart' });
                             showToast('Запрос на новую игру отправлен хосту');
@@ -1140,7 +1122,6 @@
             modePvAIBtn.addEventListener('click', () => switchMode('pvai'));
             modeOnlineBtn.addEventListener('click', () => switchMode('online'));
 
-            // Инициализация
             switchMode('online');
             updateStatsDisplay();
             startTimeSaver();
