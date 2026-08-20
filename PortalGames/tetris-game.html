@@ -568,7 +568,6 @@
 
     <script>
         (function() {
-            // ========== ПРОФИЛЬ И ДОСТИЖЕНИЯ ==========
             let profile = JSON.parse(localStorage.getItem('gamehub_profile')) || { nickname: 'Игрок', avatar: '' };
             const ACHIEVEMENTS = {
                 TETRIS_FIRST_LINE: 'tetris_first_line',
@@ -640,7 +639,6 @@
                 setTimeout(() => { window.location.href = 'index.html'; }, 400);
             });
 
-            // ========== ФОН С ЧАСТИЦАМИ ==========
             const bgCanvas = document.getElementById('bg-particles');
             const bgCtx = bgCanvas.getContext('2d');
             let bgW, bgH;
@@ -701,7 +699,6 @@
             }
             animateBg();
 
-            // ========== ТЕТРИС (увеличенная скорость) ==========
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const nextCanvas = document.getElementById('nextCanvas');
@@ -728,12 +725,10 @@
             let score = 0, lines = 0, level = 1;
             let highScore = parseInt(localStorage.getItem('tetrisHigh')) || 0;
             let gameOver = false;
-            // Увеличенная начальная скорость: 400 мс (быстрее стандартных 500)
             let dropInterval = 400;
             let lastDrop = 0;
             let animationFrame = null;
 
-            // Анимация уничтожения линий
             let clearAnimation = {
                 active: false,
                 particles: [],
@@ -827,7 +822,6 @@
                         unlockAchievement(ACHIEVEMENTS.TETRIS_100_LINES);
 
                     level = Math.floor(lines / 10) + 1;
-                    // Более агрессивное ускорение: шаг 40 мс, минимум 100 мс
                     dropInterval = Math.max(100, 400 - (level - 1) * 40);
 
                     clearAnimation.particles = [];
@@ -1068,7 +1062,7 @@
                 initBoard();
                 nextPiece = randomPiece();
                 score = 0; lines = 0; level = 1;
-                dropInterval = 400; // начальная скорость 400 мс
+                dropInterval = 400;
                 lastDrop = 0;
                 gameOver = false;
                 clearAnimation.active = false;
