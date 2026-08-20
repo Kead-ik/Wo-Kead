@@ -109,7 +109,6 @@
         .stat-value { font-size: 1.5rem; font-weight: 700; }
         .stat-label { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; }
 
-        /* Тонкие линии Hyper OS */
         .divider {
             width: 100%;
             height: 1px;
@@ -127,7 +126,6 @@
             overflow-y: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            /* фон убран */
             margin: 0;
             padding: 0;
         }
@@ -181,7 +179,6 @@
         .btn:hover { background: #252545; transform: translateY(-2px); }
         .btn-primary { background: var(--accent); border: none; }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -269,7 +266,6 @@
     </div>
 </div>
 
-<!-- Модальное окно смены аватарки -->
 <div class="modal" id="avatarModal">
     <div class="modal-content">
         <h3>Выберите способ</h3>
@@ -285,7 +281,6 @@
 
 <script>
     (function() {
-        // Частицы
         const pc = document.getElementById('particles');
         for (let i=0; i<55; i++) {
             const p = document.createElement('div'); p.className='particle';
@@ -305,7 +300,6 @@
             avatar: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2240%22 r=%2230%22 fill=%22%23f39c12%22/%3E%3Ccircle cx=%2235%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Ccircle cx=%2265%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Cpath d=%22M40 50 Q50 60 60 50%22 stroke=%22%232c3e50%22 stroke-width=%223%22 fill=%22none%22/%3E%3C/svg%3E'
         };
 
-        // Список достижений
         const achievements = [
             { id: 'cat_first', name: 'Первая прогулка', desc: 'Набрать 50 очков в котике', icon: '🐱' },
             { id: 'cat_master', name: 'Кот-акробат', desc: 'Набрать 200 очков в котике', icon: '🌟' },
@@ -314,7 +308,6 @@
             { id: 'tetris_first', name: 'Линия', desc: 'Убрать первую линию в тетрисе', icon: '📏' },
             { id: 'tetris_master', name: 'Мастер тетриса', desc: 'Убрать 10 линий в тетрисе', icon: '🏆' },
             { id: 'tetris_god', name: 'Могу и больше!', desc: 'Убрать 50 линий в тетрисе', icon: '👑' },
-            // Достижения для крестиков-ноликов
             { id: 'tictactoe_first_win', name: 'Семечко посажено', desc: 'Выиграть 1 партию в ✕/◯', icon: '🌱' },
             { id: 'tictactoe_first_draw', name: 'Ничья', desc: 'Померитесь в ✕/◯', icon: '🤝' },
             { id: 'tictactoe_win_streak_3', name: 'Серия из 3 побед', desc: 'Выиграть 3 партии подряд в ✕/◯', icon: '🔁' },
@@ -359,7 +352,6 @@
             updateUI();
         }
 
-        // Редактирование ника
         const nickInput = document.getElementById('nicknameInput');
         const nickDisplay = document.getElementById('nicknameDisplay');
         const editBtn = document.getElementById('editNickname');
@@ -377,7 +369,6 @@
             }
         });
 
-        // Модальное окно аватарки
         const modal = document.getElementById('avatarModal');
         const avatarSection = document.getElementById('avatarSection');
         const fileInput = document.getElementById('fileInput');
@@ -418,7 +409,6 @@
             }
         });
 
-        // Назад с анимацией
         document.getElementById('backBtn').addEventListener('click', function(e) {
             e.preventDefault();
             document.body.classList.add('fade-out');
