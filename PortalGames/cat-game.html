@@ -594,9 +594,7 @@
     </div>
 
     <script>
-        // ===================================================================
-        //  0.  ПРОФИЛЬ, ДОСТИЖЕНИЯ, ВРЕМЯ
-        // ===================================================================
+
         let profile = JSON.parse(localStorage.getItem('gamehub_profile')) || { nickname: 'Игрок',
             avatar: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2240%22 r=%2230%22 fill=%22%23f39c12%22/%3E%3Ccircle cx=%2235%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Ccircle cx=%2265%22 cy=%2235%22 r=%224%22 fill=%22%232c3e50%22/%3E%3Cpath d=%22M40 50 Q50 60 60 50%22 stroke=%22%232c3e50%22 stroke-width=%223%22 fill=%22none%22/%3E%3C/svg%3E' };
 
@@ -671,9 +669,6 @@
             setTimeout(() => { window.location.href = 'index.html'; }, 400);
         });
 
-        // ===================================================================
-        //  1.  BACKGROUND PARTICLES (неоновые точки)
-        // ===================================================================
         const bgCanvas = document.getElementById('bg-particles');
         const bgCtx = bgCanvas.getContext('2d');
         let bgW, bgH;
@@ -738,9 +733,6 @@
         }
         animateBg();
 
-        // ===================================================================
-        //  2.  КОТИК-БЕГУН — НОЧНОЙ ГОРОД + КОМЕТЫ (ПЛАВНЫЙ СПАВН)
-        // ===================================================================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const W = 800,
@@ -756,14 +748,12 @@
         const restartBtn = document.getElementById('restartBtn');
         const jumpBtn = document.getElementById('jumpBtn');
 
-        // ----- Состояние -----
         let gameRunning = true;
         let isGameOver = false;
         let score = 0;
         let highScore = parseInt(localStorage.getItem('catRunnerHigh')) || 0;
         highScoreDisplay.textContent = highScore;
 
-        // Котик
         const cat = {
             x: 80,
             y: 0,
@@ -776,14 +766,12 @@
         const GRAVITY = 0.55;
         const JUMP_SPEED = -10.5;
 
-        // Препятствия (водяные гейзеры)
         let obstacles = [];
         const OBSTACLE_W = 20;
         let obsTimer = 0;
         let obsInterval = 90;
         let speed = 4;
 
-        // ----- ГОРОД (динамический спавн) -----
         let buildingsFar = [];
         let buildingsNear = [];
 
@@ -797,7 +785,6 @@
         function initCity() {
             buildingsFar = [];
             buildingsNear = [];
-            // Заполняем на ширину экрана + запас
             let xFar = -100;
             while (xFar < W + 200) {
                 const b = generateBuilding(75, 25, 50);
@@ -815,7 +802,6 @@
         }
 
         function updateCity(speed) {
-            // Дальний слой (медленнее)
             const speedFar = speed * 0.25;
             for (let i = buildingsFar.length - 1; i >= 0; i--) {
                 const b = buildingsFar[i];
@@ -824,7 +810,6 @@
                     buildingsFar.splice(i, 1);
                 }
             }
-            // Добавляем новые справа, если последнее здание ушло за правый край
             let lastFar = buildingsFar[buildingsFar.length - 1];
             if (!lastFar || lastFar.x + lastFar.w < W + 20) {
                 const xStart = lastFar ? lastFar.x + lastFar.w + 20 + Math.random() * 30 : W + 20;
@@ -837,7 +822,6 @@
                 }
             }
 
-            // Ближний слой (быстрее)
             const speedNear = speed * 0.6;
             for (let i = buildingsNear.length - 1; i >= 0; i--) {
                 const b = buildingsNear[i];
@@ -859,10 +843,8 @@
             }
         }
 
-        // ----- Луна -----
         let moonAngle = 0;
 
-        // ----- Звёзды -----
         const stars = [];
         for (let i = 0; i < 220; i++) {
             stars.push({
@@ -874,7 +856,6 @@
             });
         }
 
-        // ----- КОМЕТЫ -----
         let comets = [];
         let cometTimer = 0;
         const COMET_INTERVAL = 400;
@@ -897,11 +878,9 @@
             });
         }
 
-        // ----- Флаги достижений -----
         let achFirst = unlockedAchievements.includes(ACHIEVEMENTS.CAT_FIRST);
         let achMaster = unlockedAchievements.includes(ACHIEVEMENTS.CAT_MASTER);
 
-        // ===== Инициализация =====
         function resetGame() {
             cat.y = GROUND_Y - cat.h;
             cat.ySpeed = 0;
@@ -926,7 +905,6 @@
             startTimeSaver();
         }
 
-        // ===== Прыжок =====
         function jump() {
             if (!gameRunning || isGameOver) return;
             if (cat.grounded) {
@@ -935,11 +913,9 @@
             }
         }
 
-        // ===== Обновление =====
         function update() {
             if (!gameRunning || isGameOver) return;
 
-            // Физика
             cat.ySpeed += GRAVITY;
             cat.y += cat.ySpeed;
             if (cat.y >= GROUND_Y - cat.h) {
@@ -950,7 +926,6 @@
                 cat.grounded = false;
             }
 
-            // Препятствия
             obsTimer++;
             if (obsTimer >= obsInterval) {
                 obsTimer = 0;
@@ -985,12 +960,10 @@
                 }
             }
 
-            // Счёт
             score += 0.2;
             scoreDisplay.textContent = Math.floor(score);
             speed = 4 + Math.floor(score / 80) * 0.7;
 
-            // Достижения
             const s = Math.floor(score);
             if (s >= 50 && !achFirst) {
                 const unlocked = unlockAchievement(ACHIEVEMENTS.CAT_FIRST);
@@ -1001,13 +974,10 @@
                 if (unlocked) achMaster = true;
             }
 
-            // Луна
             moonAngle += 0.005;
 
-            // Город (плавное обновление)
             updateCity(speed);
 
-            // Кометы
             cometTimer++;
             if (cometTimer >= COMET_INTERVAL && Math.random() < 0.3) {
                 spawnComet();
@@ -1026,11 +996,9 @@
             }
         }
 
-        // ===== Отрисовка =====
         function draw() {
             ctx.clearRect(0, 0, W, H);
 
-            // ---- Небо ----
             const grad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
             grad.addColorStop(0, '#050510');
             grad.addColorStop(0.5, '#0a0a20');
@@ -1038,7 +1006,6 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, GROUND_Y);
 
-            // ---- Звёзды ----
             const time = performance.now() / 1000;
             for (const star of stars) {
                 const alpha = 0.5 + 0.5 * Math.sin(time * star.speed + star.twinkle);
@@ -1054,7 +1021,6 @@
                 }
             }
 
-            // ---- Кометы ----
             for (const c of comets) {
                 const headX = c.x;
                 const headY = c.y;
@@ -1089,7 +1055,6 @@
                 ctx.shadowBlur = 0;
             }
 
-            // ---- Луна ----
             const moonX = W * 0.8;
             const moonY = 70 + 15 * Math.sin(moonAngle);
             const moonRadius = 50;
@@ -1124,7 +1089,6 @@
             ctx.arc(moonX + 5, moonY - 25, 6, 0, Math.PI * 2);
             ctx.fill();
 
-            // ---- Город (дальний слой) ----
             for (const b of buildingsFar) {
                 const bx = b.x;
                 const by = GROUND_Y - b.h;
@@ -1140,7 +1104,6 @@
                 }
             }
 
-            // ---- Город (ближний слой) ----
             for (const b of buildingsNear) {
                 const bx = b.x;
                 const by = GROUND_Y - b.h;
@@ -1156,7 +1119,6 @@
                 }
             }
 
-            // ---- Земля ----
             ctx.fillStyle = '#08081a';
             ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
             ctx.strokeStyle = 'rgba(255,255,255,0.06)';
@@ -1166,7 +1128,6 @@
             ctx.lineTo(W, GROUND_Y);
             ctx.stroke();
 
-            // ---- Водяные гейзеры ----
             const t = performance.now() / 250;
             for (const o of obstacles) {
                 const ox = o.x,
@@ -1214,7 +1175,6 @@
                 }
             }
 
-            // ---- Котик ----
             const cx = cat.x,
                 cy = cat.y,
                 cw = cat.w,
@@ -1277,13 +1237,11 @@
             }
             ctx.shadowBlur = 0;
 
-            // ---- Счёт ----
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.font = 'bold 18px Segoe UI, sans-serif';
             ctx.fillText(`🏃 ${Math.floor(score)}`, 20, 35);
         }
 
-        // ===== Game Over =====
         function gameOver() {
             if (isGameOver) return;
             isGameOver = true;
@@ -1301,7 +1259,6 @@
             gameOverlay.classList.add('show');
         }
 
-        // ===== Game Loop =====
         let lastTime = 0;
         let accumulator = 0;
         const step = 1000 / 60;
@@ -1320,7 +1277,6 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // ===== УПРАВЛЕНИЕ =====
         document.addEventListener('keydown', (e) => {
             const key = e.key;
             if (key === ' ' || key === 'Space' || key === 'ArrowUp' || key === 'w' || key === 'W' || key === 'ц' || key ===
@@ -1345,7 +1301,6 @@
         playAgainBtn.addEventListener('click', () => { resetGame(); });
         restartBtn.addEventListener('click', () => { resetGame(); });
 
-        // ===== СТАРТ =====
         resetGame();
         requestAnimationFrame(gameLoop);
 
