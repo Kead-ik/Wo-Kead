@@ -16,7 +16,7 @@
         "role": "super_admin",
         "warnings": [],
         "is_banned": false,
-        "two_factor_enabled": false,
+        "two_factor_enabled": true,
         "subscription_updated_by": "Artem_Nikolskiy",
         "subscription_updated_at": "2026-03-14T17:42:56.471876+00:00",
         "two_factor_status": ""
