@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b091a" />
+  <meta name="description" content="Маленькая вселенная, созданная только для тебя. С днём рождения, моя любовь." />
+  <title>Для тебя. С любовью ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=Marck+Script&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <div class="scroll-rail" id="scrollRail" aria-label="Прокрутка страницы" role="presentation">
+    <div class="scroll-rail-line" aria-hidden="true"></div>
+    <div class="scroll-thumb" id="scrollThumb" role="scrollbar" aria-label="Положение на странице" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"></div>
+  </div>
+  <canvas id="universe" aria-hidden="true"></canvas>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <div class="enter" id="intro" role="dialog" aria-modal="true" aria-label="Личное поздравление">
+    <div class="intro-orbit" aria-hidden="true"></div>
+    <div class="intro-main">
+      <div class="intro-heart" aria-hidden="true">♡</div>
+      <div class="overline" style="margin-top:19px">Для одного особенного человека</div>
+      <h1>Это всё <em>для тебя.</em></h1>
+      <p>Собрал здесь наши любимые моменты. И ещё кое-что, что я очень давно хочу тебе сказать. Только тебе, моя принцесса.</p>
+      <button class="pill" id="enterButton" type="button">Открыть наше маленькое чудо <span class="ui-icon ui-arrow-right" aria-hidden="true"></span></button>
+    </div>
+    <div class="intro-foot">Сделано с бесконечной любовью ♡</div>
+  </div>
+
+  <button class="sound" id="soundButton" type="button" aria-pressed="false" aria-label="Включить песню «Созвездие ангела»"><span class="sound-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="sound-text" id="soundText">Включить «Созвездие ангела»</span></button>
+  <nav class="side-nav" aria-label="Разделы истории">
+    <a href="#home" class="active" aria-label="Начало"><i></i><span>Начало</span></a>
+    <a href="#thankyou" aria-label="Спасибо тебе"><i></i><span>Спасибо тебе</span></a>
+    <a href="#memories" aria-label="Наши воспоминания"><i></i><span>Наши моменты</span></a>
+    <a href="#words" aria-label="Твои слова"><i></i><span>Твои слова</span></a>
+    <a href="#wife" aria-label="Моя жена"><i></i><span>Моя жена</span></a>
+    <a href="#letter" aria-label="Моё письмо"><i></i><span>Моё письмо</span></a>
+    <a href="#finale" aria-label="Сюрприз"><i></i><span>Сюрприз</span></a>
+  </nav>
+
+  <main>
+    <section class="section hero scene-step" id="home" aria-label="Поздравление с днём рождения">
+      <div class="topbar"><span class="brand">only you ♡</span><span class="topbar-right">Даже на расстоянии мы рядом</span></div>
+      <div class="hero-halo" aria-hidden="true"></div>
+      <span class="hero-petal a" aria-hidden="true">✧</span><span class="hero-petal b" aria-hidden="true">♡</span><span class="hero-petal c" aria-hidden="true">✦</span><span class="hero-petal d" aria-hidden="true">✧</span>
+      <div class="hero-content">
+        <div class="hero-kicker"><span class="overline">Самый особенный день</span></div>
+        <h1 class="hero-title"><span class="line">С днём</span><span class="line two"><em>рождения,</em></span><span class="line">любимая.</span></h1>
+        <p class="hero-description">Сегодня твой день, моя любовь. И мне так хочется быть рядом, видеть твою улыбку, обнимать тебя и просто никуда не отпускать. Пока между нами расстояние, но совсем скоро мы увидимся. Я очень этого жду.</p>
+        <div class="hero-sig">Моя принцесса, моя звёздочка ♡</div>
+      </div>
+      <a href="#thankyou" class="scroll-cue" aria-label="Пролистать к поздравлению">Листай сердцем</a>
+    </section>
+
+    <section class="section thanks scene-step" id="thankyou">
+      <div class="container thanks-layout">
+        <div class="thanks-copy">
+          <span class="chapter-tag reveal">01 / От всего сердца</span>
+          <h2 class="serif-title reveal">Спасибо,<br>что ты <em>есть.</em></h2>
+          <div class="lead reveal reveal-delay">
+            <p><strong>Спасибо тебе за этот год.</strong> За то, что мы есть друг у друга. За твой смех, за нежность, за наши глупости и за все те часы, когда мы никак не могли наговориться.</p>
+            <p>Спасибо твоим родителям за тебя. Правда. За то, что однажды появилась такая удивительная девочка: добрая, нежная, упрямая, когда нужно, и такая сильная, что я иногда просто тобой любуюсь.</p>
+            <p>И при всём этом ты ещё такая весёлая, спонтанная, смешная и непредсказуемая. С тобой можно хохотать над полной ерундой, а через минуту говорить о самом важном. Обожаю тебя такую.</p>
+          </div>
+          <div class="thanks-foot reveal">Ты моё чудо. Иногда смотрю на всё, что между нами, и думаю: как же мне с тобой повезло.</div>
+        </div>
+        <div class="love-art reveal" aria-hidden="true">
+          <div class="love-ring"><div class="love-center">♡</div></div>
+          <span class="orbit-label one">моя принцесса</span><span class="orbit-label two">моя звёздочка</span><span class="orbit-label three">моё счастье</span><span class="tiny-star one">✧</span><span class="tiny-star two">✦</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="between scene-step" id="bridgeOne"><div class="symbol reveal">✦</div><p class="reveal">«А помнишь, с чего всё началось? И сколько волшебного случилось с нами потом…»</p><small class="reveal">Давай на мгновение вернёмся туда, ко всему, что мы так любим помнить</small></div>
+
+    <section class="section memories scene-step" id="memories">
+      <div class="container">
+        <div class="memories-head">
+          <span class="chapter-tag reveal">02 / Наши маленькие вечности</span>
+          <h2 class="serif-title reveal">Помнишь <em>нас?</em></h2>
+          <p class="reveal">Есть вещи, про которые достаточно сказать одно слово, и мы оба сразу улыбнёмся. Вот они, наши.</p>
+        </div>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание первое</span>
+            <h3>Наш первый<br><em>«Призрак»</em></h3>
+            <p>А помнишь наш первый фильм «Призрак»? Как я тебя успокаивал, как мы были рядом, а всё вокруг казалось по-настоящему волшебным?</p>
+            <p>Я тогда просто хотел, чтобы тебе было спокойно. А теперь даже название этого фильма для меня особенное. Потому что мы смотрели его вместе.</p>
+            <span class="memory-note">И всегда держать тебя рядом...</span>
+          </div>
+          <div class="memory-visual visual-film" aria-label="Афиша нашего первого фильма «Призрак»">
+            <span class="film-stars s1">✦</span><span class="film-stars s2">✧</span><span class="film-stars s3">✦</span>
+            <div class="tilt-shell tilt-shell-film" data-tilt><div class="film-frame"><img class="film-poster" src="assets/prizrak.png" alt="Афиша нашего первого фильма «Призрак»" loading="lazy" decoding="async" /></div></div>
+          </div>
+        </article>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание второе</span>
+            <h3>Те самые<br><em>шипучки.</em></h3>
+            <p>Помнишь наши шипучки? Как мы катались и смеялись над всякими мелочами? Другие бы не поняли, что тут смешного. А мы понимали с полуслова.</p>
+            <p>Мне так нравилось, что нам не нужно было придумывать что-то грандиозное, чтобы хорошо провести время. Хватало нас двоих.</p>
+            <span class="memory-note">Нажми на пузырьки → там тоже наши моменты</span>
+          </div>
+          <div class="memory-visual visual-bubbles" id="bubbleGame" aria-label="Интерактивные пузырьки с воспоминаниями">
+            <button class="bubble" style="--sz:83px;--x:11%;--y:20%;--dur:5s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:126px;--x:53%;--y:14%;--dur:7s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:54px;--x:74%;--y:58%;--dur:4s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:96px;--x:26%;--y:58%;--dur:6s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:41px;--x:7%;--y:72%;--dur:5.5s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:65px;--x:82%;--y:25%;--dur:6.5s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:52px;--x:44%;--y:45%;--dur:7.5s" aria-label="Открыть воспоминание"></button>
+            <button class="bubble" style="--sz:33px;--x:60%;--y:75%;--dur:5.3s" aria-label="Открыть воспоминание"></button>
+            <div class="bubble-message" id="bubbleMessage" aria-live="polite"></div>
+            <div class="bubble-instruction">Поймай мгновение, нажми на пузырёк</div>
+          </div>
+        </article>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание третье</span>
+            <h3>Смех в<br><em>MudRunner</em></h3>
+            <p>И MudRunner! Ты мне его подарила, а потом мы так в нём смеялись, что я до сих пор улыбаюсь, когда вспоминаю. Вот это был подарок с продолжением.</p>
+            <p>Помнишь, как мы искали, во что бы ещё поиграть? Могли выбирать дольше, чем играть. И мне это нравилось. Потому что я проводил время <em>с тобой</em>.</p>
+            <span class="memory-note">Наш лучший режим: вместе ♡</span>
+          </div>
+          <div class="memory-visual visual-runner" aria-label="Анимированная дорога MudRunner">
+            <div class="road"><div class="road-lines"></div></div>
+            <div class="runner-heart">♡</div><div class="runner first"></div><div class="runner second"></div><span class="track-spark">✧</span>
+          </div>
+        </article>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание четвёртое</span>
+            <h3>«Дом<br><em>за лесом»</em></h3>
+            <p>Помнишь, как мы ждали каждый новый выпуск «Дома за лесом»? Как хотелось, чтобы он уже вышел, потому что мы опять будем смотреть его вместе.</p>
+            <p>Самое приятное было даже не в том, что происходит на экране, а в том, что рядом ты. И потом можно всё обсудить, посмеяться, удивиться, поспорить о чём-нибудь.</p>
+            <span class="memory-note">Наши маленькие премьеры ♡</span>
+          </div>
+          <div class="memory-visual visual-premiere" aria-label="Ночная сцена, ожидание нового выпуска">
+            <span class="premiere-star star-a">✦</span><span class="premiere-star star-b">✧</span><span class="premiere-star star-c">✧</span>
+            <div class="premiere-orbit" aria-hidden="true"></div>
+            <div class="tilt-shell tilt-shell-premiere" data-tilt><div class="premiere-frame">
+              <div class="premiere-woods" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="premiere-moon" aria-hidden="true"></div>
+              <div class="premiere-title">ДОМ ЗА ЛЕСОМ</div>
+              <div class="premiere-caption">ждём новый выпуск вместе ♡</div>
+            </div></div>
+          </div>
+        </article>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание пятое</span>
+            <h3>Смотрели<br><em>Райтмана.</em></h3>
+            <p>Помнишь, как мы смотрели Райтмана? Как находили что-то интересное, включали и зависали вместе, а потом ещё долго разговаривали?</p>
+            <p>Мне нравились эти вечера. Не надо было никуда спешить, ничего доказывать. Просто ты, я, наши разговоры и ощущение, что день закончился хорошо.</p>
+            <span class="memory-note">Включить что-нибудь и быть вдвоём</span>
+          </div>
+          <div class="memory-visual visual-watch" aria-label="Анимированный экран наших совместных просмотров">
+            <span class="watch-spark sparkle-left">✦</span><span class="watch-spark sparkle-right">✧</span>
+            <div class="tilt-shell tilt-shell-watch" data-tilt><div class="watch-monitor">
+              <div class="watch-screen-glow"></div>
+              <div class="watch-orbit orbit-one"></div><div class="watch-orbit orbit-two"></div>
+              <div class="watch-play" aria-hidden="true"></div>
+              <div class="watch-title">РАЙТМАН</div>
+              <div class="watch-caption">наш вечер, наш выбор</div>
+            </div></div>
+            <div class="watch-stand"></div>
+            <div class="watch-reflection"></div>
+          </div>
+        </article>
+
+        <article class="memory-block reveal scene-step">
+          <div class="memory-copy">
+            <span class="memory-number">Воспоминание шестое</span>
+            <h3>Сказки<br><em>на ночь.</em></h3>
+            <p>А ещё я помню, как читал тебе сказки на ночь. Как мы разговаривали всё тише, как ты слушала, а потом мы вместе засыпали. Даже на расстоянии эти вечера были такими родными.</p>
+            <p>Помню, как ты мило сопишь во сне. А я иногда не спал, чтобы оберегать твой сон. Вдруг ты проснёшься и позовёшь меня? Я хотел быть тут и сразу ответить, чтобы ты знала: я всё ещё туть, моя принцесса. ♡</p>
+            <p>Мне так нравилось желать тебе сладеньких снов и знать, что мы рядом, пусть пока и не можем обняться.</p>
+            <span class="memory-note">Сладеньких снов, моя принцесса ♡</span>
+          </div>
+          <div class="memory-visual visual-bedtime" aria-label="Ночная книга со сказками под звёздами">
+            <div class="bedtime-halo" aria-hidden="true"></div>
+            <div class="bedtime-moon" aria-hidden="true"></div>
+            <span class="bedtime-star a">✧</span><span class="bedtime-star b">✦</span><span class="bedtime-star c">✧</span><span class="bedtime-star d">✦</span><span class="bedtime-star e">✧</span>
+            <div class="tilt-shell tilt-shell-storybook" data-tilt><div class="storybook">
+              <div class="storybook-cover"></div>
+              <div class="storybook-pages left"></div><div class="storybook-pages right"></div>
+              <div class="storybook-spine"></div>
+              <span class="storybook-heart">♡</span>
+            </div></div>
+            <span class="bedtime-whisper">и мы засыпали вместе...</span>
+          </div>
+        </article>
+
+        <div class="twentyfour scene-step" id="memoryExtras">
+          <article class="mini-panel reveal">
+            <div class="clock" aria-hidden="true"><span class="clock-number n3">3</span><span class="clock-number n9">9</span><span class="clock-hand hour"></span><span class="clock-hand minute"></span><span class="clock-mid"></span></div>
+            <span class="memory-number">Наше время</span>
+            <h3>24 часа<br><em style="color:var(--rose)">вместе.</em></h3>
+            <p>Мы могли быть вместе по 24 часа, а потом снова находили, о чём поговорить. Мне нравилось даже просто молчать с тобой на связи.</p>
+          </article>
+          <article class="mini-panel reveal reveal-delay">
+            <div class="orbit-map" aria-hidden="true"></div><div class="constellation" aria-hidden="true">∞</div>
+            <span class="memory-number">Первые маленькие сокровища</span>
+            <h3>Наши первые<br><em style="color:var(--rose)">подарки.</em></h3>
+            <p>А наши первые подарки? Я всё это помню. Особенно то, с какой любовью мы старались порадовать друг друга. Даже самая маленькая мелочь от тебя для меня совсем не мелочь.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quotes scene-step" id="words">
+      <div class="container">
+        <span class="chapter-tag reveal">03 / Слова, которые я берегу</span>
+        <h2 class="serif-title reveal">Помнишь, как ты<br><em>говорила?..</em></h2>
+        <p class="quotes-sub reveal">Ты иногда говорила что-то будто между делом, а я запоминал. Я до сих пор помню интонации, твой смех и даже наши смешные словечки.</p>
+        <div class="quote-stage reveal" aria-live="polite" aria-atomic="true">
+          <div id="quoteText">«Только с тобой я так смеялась»</div><div class="quote-note">Вот почему я так берегу наши разговоры.</div>
+        </div>
+        <div class="quote-controls reveal"><button class="arrow-btn" id="prevQuote" type="button" aria-label="Предыдущие слова"><span class="ui-icon ui-arrow-left" aria-hidden="true"></span></button><span class="quote-counter" id="quoteCounter">01 / 07</span><button class="arrow-btn" id="nextQuote" type="button" aria-label="Следующие слова"><span class="ui-icon ui-arrow-right" aria-hidden="true"></span></button></div>
+        <div class="thanks-foot reveal" style="margin-top:44px">Я помню. И буду помнить.</div>
+      </div>
+    </section>
+
+    <div class="between scene-step" id="bridgeTwo"><div class="symbol reveal">♡</div><p class="reveal">«Из всего, что могло случиться со мной, самое прекрасное в том, что мы нашли друг друга».</p><small class="reveal">И знаешь, что ещё? Даже расстояние не меняет того, что ты мой человек.</small></div>
+
+    <section class="section promise scene-step" id="promise">
+      <div class="container">
+        <span class="chapter-tag reveal">04 / Самое главное</span>
+        <h2 class="serif-title reveal">Ты моя <em>вселенная.</em></h2>
+        <p class="lead reveal">Знаешь, что я особенно люблю в тебе? Ты не сдаёшься. Если что-то важно, ты будешь стоять за это до конца. За себя, за близких, за тех, кого любишь. И в тебе удивительно уживаются эта сила и такая нежность.</p>
+        <div class="promise-orbit reveal" aria-hidden="true"><span class="infinite">∞</span></div>
+        <p class="promise-big reveal">Ты тот человек, которому я <em>доверяю</em> самое личное. С тобой я могу быть смешным, серьёзным, уставшим, каким угодно. И мне хочется первым делом идти именно к тебе.</p>
+        <div class="promise-scribble reveal">И да, ты самая-самая. Хочу быть с тобой навсегда. ♡</div>
+      </div>
+    </section>
+
+    <section class="section wife-section" id="wife">
+      <div class="container wife-layout">
+        <div class="wife-portrait reveal" aria-hidden="true">
+          <div class="wife-stars"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="wife-orbit orbit-outer"></div>
+          <div class="wife-orbit orbit-inner"></div>
+          <div class="crown-art"><span class="crown-shape"></span><span class="crown-gem"></span></div>
+          <div class="wife-heart">♡</div>
+          <div class="wife-orbit-caption">моя королева всего</div>
+        </div>
+        <div class="wife-copy">
+          <span class="chapter-tag reveal">05 / Моя принцесса</span>
+          <h2 class="serif-title reveal">А ещё ты<br><em>моя жена.</em></h2>
+          <p class="wife-lead reveal">Я так люблю называть тебя своей женой. Не ради красивого слова. Просто, когда думаю о человеке, с которым хочу делить обычные дни, вечерние разговоры, смешные истории и всё, что будет впереди, я думаю о тебе.</p>
+          <div class="wife-traits">
+            <div class="wife-trait reveal"><span class="trait-mark">✧</span><div><b>Ты у меня чудо.</b><p>Можешь рассмешить одним словом. Превратить скучный вечер в какой-то наш маленький праздник. Быть такой смешной и милой, что хочется заобнимать.</p></div></div>
+            <div class="wife-trait reveal"><span class="trait-mark">♡</span><div><b>Ты у меня сильная.</b><p>Я знаю, как ты умеешь добиваться своего и защищать дорогих людей. И очень хочу, чтобы ты помнила: тебе не нужно всегда со всем справляться одной.</p></div></div>
+            <div class="wife-trait reveal"><span class="trait-mark">✦</span><div><b>Ты у меня настоящая.</b><p>Весёлая, нежная, иногда упрямая, иногда безумно смешная. Я люблю не какой-то идеальный образ. Я люблю именно тебя, со всеми твоими настроениями и привычками.</p></div></div>
+          </div>
+          <div class="wife-sign reveal">Моя жена. Моя принцесса. Моя вкусненькая булочка с маком. ♡</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section letter-section scene-step" id="letter">
+      <div class="letter-shell reveal">
+        <span class="chapter-tag">06 / То, что хочется сказать</span>
+        <h2>Письмо <em>тебе.</em></h2>
+        <p class="letter-caption">Здесь то, что я хочу сказать тебе совсем тихо, как будто мы сейчас вдвоём.</p>
+        <div class="envelope-wrap" id="envelope" aria-hidden="true"><div class="envelope-back"></div><div class="envelope-paper">для моей любви ♡</div><div class="envelope-front"></div><div class="envelope-flap"></div><div class="wax">♡</div></div>
+        <button class="pill" id="openLetter" type="button" aria-expanded="false" aria-controls="letterBody">Открыть моё письмо <span class="ui-icon ui-arrow-right" aria-hidden="true"></span></button>
+        <div class="letter-body" id="letterBody"><div class="letter-inner"><div class="letter-inner-content">
+          <p>Моя принцесса,</p>
+          <p>Сейчас бы оказаться рядом и просто тебя обнять. Без всех этих экранов и расстояний. Я представляю, как ты улыбаешься, и мне уже хорошо. А когда мы наконец увидимся, я вообще не захочу тебя отпускать.</p>
+          <p>Я обожаю всё наше смешное. Чаггинтон, «ту-ту», наши разговоры ни о чём, которые почему-то всегда получались обо всём. Помню, как смотрели «Великолепный век», как вместе старались, переживали, что-то придумывали, иногда спорили, потом мирились. Ты знаешь, я помню гораздо больше, чем умею рассказать.</p>
+          <p>Я помню, как сделал тебе предложение. Мне тогда правда было важно, чтобы ты приняла его и на основном аккаунте. Ты не приняла, и я немножко расстроился, не буду скрывать. Но само моё желание никуда не делось: я хочу быть с тобой, а не просто красиво об этом говорить.</p>
+          <p>И я хочу сказать тебе кое-что ещё. Мне нравится, какая ты. Не только когда смеёшься и дурачишься со мной, но и когда серьёзная, когда стоишь на своём, когда устаёшь и всё же находишь силы идти дальше. Ты удивительная. И не обязана быть сильной каждую секунду. Со мной можно и погрустить, и пожаловаться, и просто помолчать.</p>
+          <p>Конечно, мы тоже ссоримся. Иногда говорим лишнее, переживаем и не сразу понимаем друг друга. Но главное, что мы всегда ищем и находим общее решение. Для меня важно не то, чтобы у нас никогда не было споров, а то, что мы выбираем слышать друг друга и оставаться вместе.</p>
+          <p>С днём рождения, моя любовь. Очень хочу, чтобы у тебя получилось всё, о чём ты мечтаешь. А ещё хочу, чтобы ты почаще видела себя моими глазами. Потому что для меня ты невероятная. Такая маленькая, родная, сильная, нежная. И очень-очень любимая.</p>
+          <p><em>Скоро обниму тебя. А пока мысленно обнимаю так крепко, как только можно.</em></p>
+          <div class="letter-sign">Люблю тебя. Моя принцесса и королева всего. ♡</div>
+        </div></div></div>
+      </div>
+    </section>
+
+    <section class="section finale scene-step" id="finale">
+      <div class="container">
+        <span class="finale-heart reveal">♡</span>
+        <span class="chapter-tag reveal">И напоследок...</span>
+        <h2 class="reveal">С днём<br><em>рождения,</em><br>моё счастье.</h2>
+        <p class="finale-description reveal">Я очень хочу, чтобы сегодня ты улыбалась. Чтобы знала, какая ты невероятная и как сильно я тебя люблю. Хочу читать тебе сказки уже совсем рядом, засыпать вместе и встречать с тобой каждое новое утро. Мы пока далеко друг от друга, но скоро встретимся. И тогда я скажу всё это уже не через экран.</p>
+        <button class="pill reveal" id="wishButton" type="button">Загадай желание ✦ <span class="ui-icon ui-spark" aria-hidden="true"></span></button>
+        <div class="finale-reveal" id="finaleReveal" role="status">А мое желание уже сбылось, у меня есть моя любимая девочка, жена и звездочка, которой я никогда не хочу причинить плохо, а только обнять и уснуть ♡</div>
+
+      </div>
+    </section>
+  </main>
+  <div class="ending-overlay" id="endingOverlay" role="dialog" aria-modal="true" aria-label="Моё самое важное признание" aria-hidden="true" inert>
+    <button class="ending-close" id="endingClose" type="button" aria-label="Закрыть титры"><span aria-hidden="true"></span></button>
+    <div class="ending-overlay-inner">
+      <div class="ending-kicker">Для моей принцессы ♡</div>
+      <div class="ending-lines" aria-live="off"><p class="ending-line" id="endingLine"></p></div>
+      <div class="ending-hint">Наша маленькая история продолжается</div>
+    </div>
+  </div>
+  <audio id="loveSong" preload="auto" playsinline loop src="l.mp3"></audio>
+  <footer class="footer">В этой маленькой вселенной самое прекрасное это <span>ты.</span> Сделано с любовью ♡</footer>
+
+  <script defer src="app.js"></script>
+</body>
+</html>
